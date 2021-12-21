@@ -14,4 +14,7 @@ public class StudentMain {
 		studentInfo[cnt++]=new SchoolStudent(name,avg);
 		out.println("데이터 입력이 완료되었습니다.");
 	}
+	public void searchData() {
+		
+	}
 }
