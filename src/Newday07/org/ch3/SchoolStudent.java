@@ -8,6 +8,6 @@ public class SchoolStudent {
 		this.avg = avg;
 	}
 	public void SchoolPrint () {
-		out.printf(student, "%s 님의 평균은 %.2f","입니다");
+		out.println("\n"+student+"님의 평균 점수는 "+avg+"입니다. \n");
 	}
 }
