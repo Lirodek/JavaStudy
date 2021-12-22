@@ -57,7 +57,8 @@ class Student {
 public class MainCls {
 	public static final Scanner scan = new Scanner(System.in);
 	public static final Scanner scanN = new Scanner(System.in);
-	
+	public static String[] A = {"A","B","C","D","E","G","H"};
+	public static int nameSpelCheck=0;
 	public static final int MAX = 100;
 	static Student[] sArr = new Student[MAX];
 	static int top = 0; // 스텍 자료구조처럼.
@@ -83,6 +84,7 @@ public class MainCls {
 				}
 			}
 		}
+		rankCheck();
 	}
 	public static int getNum() {
 		int n;
@@ -109,7 +111,7 @@ public class MainCls {
 		return no;
 	}
 	
-	public static void run() {
+	public static int run() {
 		switch(menu()) {
 		case 1 : input(); break;
 		case 2 : output(); break;
@@ -119,7 +121,8 @@ public class MainCls {
 		case 6 : end(); break;
 		default : out.println("--- 해당 사항 없습니다! ---");
 		}
-		System.out.println("------------------------------------");
+		
+		return 0;
 	}
 	public static void rankCheck() {
 		for(int idx=0;idx<top;idx++) {
@@ -150,7 +153,7 @@ public class MainCls {
 		System.exit(0);
 	}
 
-	private static void delete() {
+	private static int delete() {
 		System.out.println("::::: DELETE :::::");
 		// 이름으로 검색 후 삭제
 		out.println("학생의 성적을 삭제합니다.");
@@ -160,36 +163,46 @@ public class MainCls {
 		
 		if(dataIdx<0) {
 			out.println("해당 학생을 찾을수 없습니다.");
+			return 0;
 		}else {
-			
-			for(int idx=dataIdx;idx<top;idx++) {
-				sArr[idx]=sArr[idx+1];
+			out.println("정말로 삭제하시겠습니까?.");
+			out.println("계속하시겠습니까?(Y/N)");
+			String answer = scanN.nextLine();
+			if("Y".equals(answer)||"y".equals(answer)) {
+				for(int idx=dataIdx;idx<top;idx++) {
+					sArr[idx]=sArr[idx+1];
+				}
+				top--;
+				out.println("-----데이터 삭제를 완료했습니다.-------");
+				return 0;
 			}
-			top--;
-			out.println("-----데이터 삭제를 완료했습니다.-------");
+			else if("N".equals(answer)||"n".equals(answer)) return 0;
+			else return delete();
+			
 		}
 	}
 	private static void modify() {
 		System.out.println("::::: MODIFY :::::");
 		// 이름으로 검색 후 수정
 		out.println("학생의 성적을 수정합니다.");
-		out.print("입력 : ");
-		String name = scanN.nextLine();
+		String name = getName();
 		int dataIdx = search(name);
 		if(dataIdx<0) {
 			out.println("찾으시는 학생의 정보가 없습니다.");
 		}else {
 			out.println(sArr[dataIdx].name+"의 정보를 수정합니다.");
-			out.print("kor : ");
-			int kor = scan.nextInt();
-			out.print("eng : ");
-			int eng = scan.nextInt();
-			out.print("math : ");
-			int math = scan.nextInt();
+			int kor = getScore("kor : ");
+			int eng = getScore("eng : ");
+			int math = getScore("math : ");
 			sArr[dataIdx] = new Student(sArr[dataIdx].no, name,kor, eng, math);
 			appointedRank();
 			rankCheck();
 		}
+	}
+	private static String getName() {
+		out.print("입력 : ");
+		String name = scanN.nextLine();
+		return name;
 	}
 
 	private static int search(String name) {
@@ -211,38 +224,69 @@ public class MainCls {
 			out.println(std);
 		}
 	}
-		private static String equalsName() {
-		String name = scanN.nextLine();
+	private static String returnName(int nameL,String name) {
+		
+		if(nameL>4) {
+			out.println("이름의 길이가 4자리 이상입니다 맞습니까?(Y/N)");
+			String answer = scanN.nextLine();
+			if("Y".equals(answer)||"y".equals(answer))return name;
+			else if("N".equals(answer)||"n".equals(answer)) {
+				return name= null;
+			}
+			else {out.println("잘못된 입력입니다 다시 입력해주세요."); return name  = null;}
+		}else{return name;}
+	}
+		private static String equalsName(String name) {
 		int dataIdx = search(name);
-		if(dataIdx>0) {
+		if(dataIdx<0) {
 			return name;
 		}else {
 			out.println("중복되는 이름이 있습니다.");
 			out.println("계속하시겠습니까?(Y/N)");
 			String answer = scanN.nextLine();
-			if("Y".equals(answer)==0||"y".equals(answer)==0)
-				return name+"B";
-			
+			while("Y".equals(answer)||"y".equals(answer)||"N".equals(answer)||"n".equals(answer)) {
+				if("Y".equals(answer)||"y".equals(answer))return name+A[nameSpelCheck++%7];
+				else if("N".equals(answer)||"n".equals(answer)) return null;
+			}
+			return name;
 		}
 		
 	}
+	private static int getScore(String s) {
+		int score;
+		try{
+			out.print(s);
+			score = scan.nextInt();
+		}catch(Exception e) {
+			scan.nextLine();
+			out.println("잘못 입력하였습니다.");
+			return getScore(s);
+			
+		}
+		if(score<0||score>100) {
+			out.println("성적을 잘못입력하였습니다.");
+			return getScore(s);
+		}else return score;
+	}
 
-	private static void input() {
+	@SuppressWarnings("unused")
+	private static int input() {
 		System.out.println("::::: INPUT :::::");
 		// 성명, 국어, 영어, 수학를 배열에 입력 받는다.
 		// 입력 받은 국영수 점수의 총점과 평균, 평균의 학점, 
 		// 입력 된 학생의 등수가 셋팅 된다.
-		out.print("이름 : ");
-		String name = scanN.nextLine();
-		out.print("kor : ");
-		int kor = scan.nextInt();
-		out.print("eng : ");
-		int eng = scan.nextInt();
-		out.print("math : ");
-		int math = scan.nextInt();
+		String name = getName();
+		int nameL = name.length();
+		name = returnName(nameL,name);
+		if(name == null)  return input();
+		name = equalsName(name);
+		if(name == null)  return input();
+		int kor = getScore("kor : ");
+		int eng = getScore("eng : ");
+		int math = getScore("math : ");
 		sArr[top++] = new Student(sequence++, name,kor, eng, math);
 		appointedRank();
-		rankCheck();
+		return 1;
 		
 	}
 
@@ -250,6 +294,7 @@ public class MainCls {
 		out.println("::::: 성적 출력 프로그램 :::::");
 		while(true) {
 			run();
+			System.out.println("------------------------------------");
 		}
 	}
 }
