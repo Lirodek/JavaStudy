@@ -7,7 +7,7 @@ public class GamerDAO {
 	private static final GammerVo[] gameArr = new GammerVo[MAX];
 	public static int topCnt=0;
 	public static int sequenceMem=1;
-	{                                         //     저그 테란 토스
+	{                                         //     테 프 저
 		gameArr[topCnt++] = new GammerVo(sequenceMem++,"염보성","테란",59,62,55);
 		gameArr[topCnt++] = new GammerVo(sequenceMem++,"전상욱","테란",63,55,58);
 		gameArr[topCnt++] = new GammerVo(sequenceMem++,"이윤열","테란",62,61,59);
@@ -98,81 +98,60 @@ public class GamerDAO {
 				System.out.println("삭제완료");
 		}
 	}
-	public void gameModi(GammerVo vo) {
+	public void gameModiTribe(GammerVo vo) {
 		int idx = dataCheck(vo);
 		if(idx<0) {
 			noOne();
 			return;
 		}
 		else {
-			if(!(vo.getTribe().equals(null))) {
-				GammerVo newGame = new GammerVo();
-				newGame.setMember(gameArr[idx].getMember());
-				newGame.setName(gameArr[idx].getName());
-				newGame.setTribe(vo.getTribe());
-				newGame.setTerran(vo.getTerran());
-				newGame.setProtoss(vo.getProtoss());
-				newGame.setZerg(vo.getZerg());
-				newGame.setAvg(vo.avg());
-				newGame.setGrade(vo.getGrade());
-				gameArr[idx]=newGame;
-				BubleStrime();
-				return;
-			}
-			if(!(vo.getTerran()!=0)) {
-				GammerVo newGame = new GammerVo();
-				newGame.setMember(gameArr[idx].getMember());
-				newGame.setName(gameArr[idx].getName());
-				newGame.setTribe(gameArr[idx].getTribe());
-				newGame.setTerran(vo.getTerran());
-				newGame.setProtoss(gameArr[idx].getProtoss());
-				newGame.setZerg(gameArr[idx].getZerg());
-				newGame.setAvg(gameArr[idx].getAvg());
-				newGame.setRank(gameArr[idx].getRank());
-				newGame.setGrade(gameArr[idx].getGrade());
-				gameArr[idx]=newGame;
-				BubleStrime();
-				return;
-			}
-			if(!(vo.getProtoss()!=0)) {
-				GammerVo newGame = new GammerVo();
-				newGame.setMember(gameArr[idx].getMember());
-				newGame.setName(gameArr[idx].getName());
-				newGame.setTribe(gameArr[idx].getTribe());
-				newGame.setTerran(gameArr[idx].getTerran());
-				newGame.setProtoss(vo.getProtoss());
-				newGame.setZerg(gameArr[idx].getZerg());
-				newGame.setAvg(gameArr[idx].getAvg());
-				newGame.setRank(gameArr[idx].getRank());
-				newGame.setGrade(gameArr[idx].getGrade());
-				gameArr[idx]=newGame;
-				BubleStrime();
-				return;
-			}
-			if(!(vo.getZerg()!=0)) {
-				GammerVo newGame = new GammerVo();
-				newGame.setMember(gameArr[idx].getMember());
-				newGame.setName(gameArr[idx].getName());
-				newGame.setTribe(gameArr[idx].getTribe());
-				newGame.setTerran(gameArr[idx].getTerran());
-				newGame.setProtoss(gameArr[idx].getProtoss());
-				newGame.setZerg(vo.getZerg());
-				newGame.setAvg(gameArr[idx].getAvg());
-				newGame.setRank(gameArr[idx].getRank());
-				newGame.setGrade(gameArr[idx].getGrade());
-				gameArr[idx]=newGame;
-				BubleStrime();
-				return;
-			}
-		}
+			gameArr[idx].setTribe(vo.getTribe());
+			gameArr[idx].setTerran(vo.getTerran());
+			gameArr[idx].setProtoss(vo.getProtoss());
+			gameArr[idx].setZerg(vo.getZerg());
+			BubleStrime();
 			
-		
+		}
 	}
-	private void zergViewer() {
+	public void gameModiTerran(GammerVo vo) {
+		int idx = dataCheck(vo);
+		if(idx<0) {
+			noOne();
+			return;
+		}
+		else {
+			gameArr[idx].setTerran(vo.getTerran());
+			BubleStrime();
+			
+		}
+	}
+	public void gameModiProtoss(GammerVo vo) {
+		int idx = dataCheck(vo);
+		if(idx<0) {
+			noOne();
+			return;
+		}
+		else {
+			gameArr[idx].setProtoss(vo.getProtoss());
+			BubleStrime();
+		}
+	}
+	public void gameModiZerg(GammerVo vo) {
+		int idx = dataCheck(vo);
+		if(idx<0) {
+			noOne();
+			return;
+		}
+		else {
+			gameArr[idx].setZerg(vo.getZerg());
+			BubleStrime();
+		}
+	}
+	public void zergViewer() {
 		int trank=1;
 		System.out.println("Zerg 현황");
 		GammerVo[] newArr = new GammerVo[topCnt];
-		for(int i=0;i<newArr.length;i++) {
+		for(int i=0;i<topCnt;i++) {
 			if(gameArr[i].getTribe().equals(TRIBE_VAL.ZERG)) {
 				GammerVo newGame = new GammerVo();
 				newGame.setMember(gameArr[i].getMember());
@@ -185,18 +164,12 @@ public class GamerDAO {
 				newGame.setRank(gameArr[i].getRank());
 				newGame.setGrade(gameArr[i].getGrade());
 				newArr[i]=newGame;
-				trank++;
+				newArr[i].tribeShow(trank++);
 			}
 		}
-		for(int i=0;i<trank;i++) {
-			if(newArr[i].getName().equals(null))
-				return;
-			newArr[i].tribeShow(i);
-		}
-		
 		if(trank==1) out.println("등록된 게이머가 없습니다.");
 	}
-	private void protossViewer() {
+	public void protossViewer() {
 		int trank=1;
 		System.out.println("Protoss 현황");
 		GammerVo[] newArr = new GammerVo[topCnt];
@@ -213,20 +186,16 @@ public class GamerDAO {
 				newGame.setRank(gameArr[i].getRank());
 				newGame.setGrade(gameArr[i].getGrade());
 				newArr[i]=newGame;
-				trank++;
+				newArr[i].tribeShow(trank++);
 			}
 		}
-		for(int i=0;i<trank;i++) {
-			if(newArr[i].getName().equals(null))
-				return;
-			newArr[i].tribeShow(i);
-		}
-		
 		if(trank==1) out.println("등록된 게이머가 없습니다.");
 	}
 	public GammerVo searchData(GammerVo vo) {
 		int i =dataCheck(vo);
-		if(i<0) System.out.println("해당선수를 찾지못했습니다.");
+		if(i<0) {
+			System.out.println("해당선수를 찾지못했습니다.");
+		}
 		else {
 				GammerVo newGame = new GammerVo();
 				newGame.setMember(gameArr[i].getMember());
@@ -243,7 +212,7 @@ public class GamerDAO {
 		}
 		return null;
 	}
-	private void terranViewer() {
+	public void terranViewer() {
 		int trank=1;
 		System.out.println("Terran 현황");
 		GammerVo[] newArr = new GammerVo[topCnt];
@@ -260,15 +229,9 @@ public class GamerDAO {
 				newGame.setRank(gameArr[i].getRank());
 				newGame.setGrade(gameArr[i].getGrade());
 				newArr[i]=newGame;
-				trank++;
+				newArr[i].tribeShow(trank++);
 			}
 		}
-		for(int i=0;i<trank;i++) {
-			if(newArr[i].getName().equals(null))
-				return;
-			newArr[i].tribeShow(i);
-		}
-		
 		if(trank==1) out.println("등록된 게이머가 없습니다.");
 	}
 	

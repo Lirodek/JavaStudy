@@ -15,7 +15,7 @@ public class R {
 	public static GammerVo gameVo;
 	public static GammerVo[] gameArr;
 	public static final int SEARCH=0,GOING=1;
-	public static int type=0;
+	public static int type=0, modiChoice=0,tribeC;
 	public static final GamerView searchView= new GamerViewSearchdata();
 	public static final GamerView menuView = new GamerViewMenu();
 	public static final GamerView inputView = new GameViewInputData();

@@ -14,6 +14,6 @@ interface TRIBE_MENU{
 	int ZERG=1,PROTOSS=2,TERRAN=3;
 }
 interface TRIBE_VAL{
-	String ZERG="저그",PROTOSS="토스",TERRAN="테란";
+	String ZERG="저그",PROTOSS="플토",TERRAN="테란";
 	
 }

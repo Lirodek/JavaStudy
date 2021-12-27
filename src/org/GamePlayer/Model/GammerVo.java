@@ -9,10 +9,10 @@ public class GammerVo {
 	GammerVo(){
 		this(0,"","",0,0,0);
 	}
-	public double avg() {
-		this.avg = (terran+zerg+protoss)/3;
+	public void avg() {
+		int sum = (terran+zerg+protoss);
+		this.avg  = sum/3;
 		setGrade();
-		return avg;
 	}
 	public GammerVo(int member, String name, String tribe, int terran, int protoss, int zerg) {
 		// TODO Auto-generated constructor stub
@@ -49,24 +49,30 @@ public class GammerVo {
 	}
 	public void setTerran(int terran) {
 		this.terran = terran;
+		avg();
 	}
 	public int getZerg() {
 		return zerg;
 	}
 	public void setZerg(int zerg) {
 		this.zerg = zerg;
+		avg();
+		
+		
 	}
 	public int getProtoss() {
 		return protoss;
 	}
 	public void setProtoss(int protoss) {
 		this.protoss = protoss;
+		avg();
 	}
 	public int getRank() {
 		return rank;
 	}
 	public void setRank(int rank) {
 		this.rank = rank;
+		
 	}
 	public int getMember() {
 		return member;
