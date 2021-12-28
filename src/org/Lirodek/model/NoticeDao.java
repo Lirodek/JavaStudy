@@ -83,6 +83,25 @@ public class NoticeDao {
 	public void insert(NoticeVo vo) {
 		vo.setNo(noticeSeq++);
 		nArr[topCnt++] = vo;
-		System.out.println(topCnt);
+		System.out.println(topCnt+"번째 메모로 저장됨");
+	}
+	public NoticeVo[] nameSearch(NoticeVo vo) {
+		NoticeVo[] newArr = new NoticeVo[topCnt];
+		int temp=0;
+		for(int i=0;i<newArr.length;i++) {
+				NoticeVo noticeN = new NoticeVo();
+				noticeN.setNo(nArr[i].getNo());
+				noticeN.setUser(nArr[i].getUser());
+				noticeN.setMessage(nArr[i].getMessage());
+				noticeN.setRegDate(nArr[i].getRegDate());
+				if(noticeN.getUser().equals(vo.getUser())) {
+					newArr[temp++] = noticeN;
+				}
+		}
+		for(int i=0;i<temp;i++) {
+			if(newArr[i]==null)return null;
+			newArr[i].print();
+		}
+		return newArr;
 	}
 }

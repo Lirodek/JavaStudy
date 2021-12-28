@@ -6,6 +6,7 @@ import org.Lirodek.view.NoticeAllout;
 import org.Lirodek.view.NoticeDelete;
 import org.Lirodek.view.NoticeInsert;
 import org.Lirodek.view.NoticeMenu;
+import org.Lirodek.view.NoticeName;
 import org.Lirodek.view.NoticeOneout;
 import org.Lirodek.view.NoticeUpdate;
 import org.Lirodek.view.NoticeView;
@@ -14,7 +15,7 @@ public class R {
 	
 	public static NoticeVo nVo = new NoticeVo();
 	public static NoticeVo arr[];
-	
+	public static int cnt=0;
 	public static int no=0;
 	public  static int choice =0;
 
@@ -25,6 +26,7 @@ public class R {
 	public static final NoticeView insertView = new NoticeInsert();
 	public static final NoticeView noeoutView = new NoticeOneout();
 	public static final NoticeView updateView = new NoticeUpdate();
+	public static final NoticeView nameView = new NoticeName();
 	
 	public static final NoticeController controlView = new NoticeController(); 
 }

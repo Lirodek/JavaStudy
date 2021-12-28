@@ -51,7 +51,11 @@ public class NoticeVo {
 
 	@Override
 	public String toString() {
-		return  "[ "+no + " ]\t" + user + "\t" + message + "\t" + regDate;
+		
+		return  "[ "+no + " ]\t" + user + "\t" + (message.length()>6?message.substring(0, 6):message) + "   \t" + regDate;
+	}
+	public void print() {
+		System.out.println( "[ "+no + " ]\t" + user + "\t" + message + "   \t\t" + regDate);
 	}
 	
 	

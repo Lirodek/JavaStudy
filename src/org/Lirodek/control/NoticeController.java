@@ -17,7 +17,7 @@ public class NoticeController {
 		case 2:
 			vc.run(R.noeoutView);
 			R.nVo = dao.selectByno(R.no);
-			System.out.println(R.nVo);
+			R.nVo.print();
 			break;
 		case 3:
 			vc.run(R.updateView);
@@ -32,12 +32,21 @@ public class NoticeController {
 			vc.run(R.allView);
 			break;
 		case 6:
+			vc.run(R.nameView);
+			R.arr = dao.nameSearch(R.nVo);
+			vc.run(R.nameView);
+			R.cnt=0;
+			break;
+		case 7:
 			System.out.println("프로그램을 종료합니다.");
 			System.exit(0);
 			break;
-			
+		default:
+			System.out.println("1~8사이의 숫자를 입력해주세요.");
+			break;
 		}
 		R.choice=0;
 		R.no=0;
+		R.arr=null;
 	}
 }
