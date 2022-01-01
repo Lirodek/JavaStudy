@@ -3,34 +3,25 @@ package ShapeExShape.org.org;
 import java.util.Calendar;
 import java.util.Scanner;
 
+
 public class GraphicEdior {
 
+//	public static void main(String[] args) {
+//		// TODO Auto-generated method stub
+//		PrintCal p1 = new PrintCal("황기태");
+//		PrintCal p2 = new PrintCal("이재문");
+//		
+//		System.out.println("10초에 가까운 사람이 이기는 게임입니다.");
+//		int result1 = p1.game();
+//		int result2 = p2.game();
+//		if(Math.abs(result1-10)<Math.abs(result2-10))
+//			System.out.println("황기태의 결과"+result1+"이재문의결과"+result2+"승자는황기태");
+//		else
+//			System.out.println("황기태의 결과"+result1+"이재문의결과"+result2+"승자는이재문");
+//	}
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Scanner sc = new Scanner(System.in);
-		PrintCal p = new PrintCal();
-		String s[] = {"황기태","이재문"};
-		int[] game= new int[2];
-		int[] game1= new int[2];
-		System.out.println("10초에 가까운 사람이 이기는 게임입니다.");
-		for(int i=0;i<s.length;i++) {
-			System.out.print(s[i]+" 시작<Enter>키>>");
-			sc.nextLine();
-			Calendar c = Calendar.getInstance();
-			game[i] = c.SECOND;
-			game[i] = Math.abs(game[i]);
-		
-			System.out.println(game[i]);
-			System.out.println("10초 예상 후 <Enter키>>>");
-			sc.nextLine();
-			game[i] = c.SECOND;
-			game[i] = Math.abs(game[i]);
-			System.out.println(game[i]);
-		}
-		
-		System.out.println(p.game());
-		
-		
+		int a=-6,b=3;
+		System.out.println(Math.abs(a)<Math.abs(b));
 	}
 
 }
