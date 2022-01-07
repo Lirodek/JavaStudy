@@ -1,14 +1,13 @@
 package MiddleController;
 import java.util.ArrayList;
 
-import MiddlePro.Menu;
-import MiddlePro.PhoneManager;
 import MiddleView.MiddleView;
+import MiddleView.MiddleViewAllDelete;
 import MiddleView.MiddleViewBring;
 import MiddleView.MiddleViewDelete;
+import MiddleView.MiddleViewEnd;
 import MiddleView.MiddleViewIndex;
 import MiddleView.MiddleViewMenu;
-import MiddleView.MiddleViewSave;
 import MiddleView.MiddleViewSearch;
 import MiddleView.MiddleViewUpdate;
 import MiddleView.MiddleViewinsert;
@@ -28,9 +27,10 @@ public class R {
 	public static final MiddleView vIdx = new MiddleViewIndex();
 	public static final MiddleView vInput = new MiddleViewinsert();
 	public static final MiddleView vMenu = new MiddleViewMenu();
-	public static final MiddleView vSave = new MiddleViewSave();
+	public static final MiddleView vAllDelete = new MiddleViewAllDelete();
 	public static final MiddleView vSearch = new MiddleViewSearch();
 	public static final MiddleView vUpdate = new MiddleViewUpdate();
+	public static final MiddleView vEnd = new MiddleViewEnd();
 	public static final Control pstart = new Control();
 	
 }

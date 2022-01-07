@@ -1,7 +1,6 @@
 package MiddleView;
 
 import MiddleController.R;
-import MiddlePro.Menu;
 import MiddlePro.PhoneInfo;
 
 public class MiddleViewSearch extends MiddleView{

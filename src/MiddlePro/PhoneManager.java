@@ -1,6 +1,9 @@
 package MiddlePro;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +15,7 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 abstract class pMana {
 
@@ -28,43 +32,108 @@ public class PhoneManager extends pMana {
 	private Iterator<PhoneInfo> itr;
 	private Iterator<String> itrkeys;
 	private ArrayList<PhoneInfo> pList;
-	private static final String dir = "C:\\Users\\Administrator\\OneDrive\\배광민\\JAVA_2\\phone.json";
+	MakeDirectory Directory;
+	
 	private PhoneInfo pInfo = new PhoneInfo();
-	{
-		pMap.put("배광민", new PhoneInfo("배광민", "010-0000-0000", 24, "본인"));
-		pMap.put("배강민", new PhoneInfo("배강민", "010-1111-1111", 22, "동생"));
-		pMap.put("수선화", new PhoneInfo("수선화", "010-0000-0000", 2, "꽃"));
+	public boolean allDalete() {
+		boolean b = checkAll("정말로 삭제하시겠습니까?(Y\\N)");
+		if(b==true) {
+			pMap.clear();
+			File file = new File(Menu.FILE);
+			if(file.exists()) {
+				file.delete();
+				System.out.println("파일을 삭제했습니다.");
+			} else {
+				System.out.println("파일이 존재하지 않습니다.");
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	private boolean checkAll(String s) {
+		sc = new Scanner(System.in);
+		System.out.println(s);
+		char answer;
+		try {
+			answer = sc.next().toUpperCase().charAt(0);
+			if (answer != Menu.YES && answer != Menu.NO) {
+				System.out.println(Menu.REPLZ);
+				return checkAll(s);
+			}
+		} catch (Exception e) {
+			System.out.println("캐치오류");
+			sc.next();
+			return checkAll(s);
+		}
+		switch (answer) {
+		case Menu.YES:
+			return true;
+		case Menu.NO:
+			return false;
+		}
+		return false;
 
+	}
+	public void bringFile() {
+		
+		File file = new File(Menu.FILE);
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(file);
+			BufferedInputStream bis = new BufferedInputStream(fis);
+
+			JSONTokener jtk = new JSONTokener(bis);
+			JSONObject fileObj = new JSONObject(jtk);
+			JSONArray jArray = new JSONArray();
+			jArray = fileObj.getJSONArray("members");
+			for (int i = 0; i < jArray.length(); i++) {
+				JSONObject tempJobj = new JSONObject();
+				tempJobj = (JSONObject) jArray.get(i);
+				String name = tempJobj.getString("이름");
+				String phone = tempJobj.getString("번호");
+				int age = (int) tempJobj.get("나이");
+				String relation = tempJobj.getString("관계");
+				System.out.print(name+"  ");
+				pInfo = new PhoneInfo(name, phone, age, relation);
+				pMap.put(pInfo.getName(), pInfo);
+				
+			}
+			System.out.println("의\n데이터를 성공적으로 불러왓습니다.");
+
+		} catch (FileNotFoundException e) {
+			System.out.println("저장소가 존재하지않습니다.");
+			Directory = new MakeDirectory();
+		} catch (JSONException e) {
+			System.out.println("저장된 데이터가 없습니다.");
+		}
 	}
 
 	public void SaveFile() {
 		pList = new ArrayList<PhoneInfo>();
 		try {
-			FileWriter file = new FileWriter(dir);
+			FileWriter file = new FileWriter(Menu.FILE);
 			JSONArray jArray = new JSONArray();
 			itr = pMap.values().iterator();
 			while (itr.hasNext()) {
 				pInfo = itr.next();
-				System.out.println(pInfo);
 				JSONObject pObject = new JSONObject();
 				pObject.put("이름", pInfo.getName());
 				pObject.put("번호", pInfo.getPhone());
 				pObject.put("나이", pInfo.getAge());
 				pObject.put("관계", pInfo.getRelation());
 				jArray.put(pObject);
-				
+
 			}
 			JSONObject root = new JSONObject();
-			root.put(dir, jArray);
-			FileWriter writer = new FileWriter(dir);
+			root.put("members", jArray);
+			FileWriter writer = new FileWriter(Menu.FILE);
 			writer.write(root.toString());
 			writer.close();
-			System.out.println("데이터 저장을 완료했습니다.");
-			System.exit(0);
-			 
-			
+			file.close();
+
 		} catch (JSONException e) {
-			e.printStackTrace();
+			System.out.println("저장할 데이터가 존재하지 않습니다.");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -195,7 +264,7 @@ public class PhoneManager extends pMana {
 		} else {
 			System.out.println(pInfo.toString(1));
 			System.out.println(p.toString(1));
-			boolean check = checkup(p, "해당 데이터를 정말로 수정하시겠습니까?");
+			boolean check = checkup(p, "해당 데이터를 정말로 수정하시겠습니까?(Y\\N)");
 			if (check == true) {
 				pMap.put(p.getName(), p);
 				return p;
@@ -212,11 +281,11 @@ public class PhoneManager extends pMana {
 			answer = sc.next().toUpperCase().charAt(0);
 			if (answer != Menu.YES && answer != Menu.NO) {
 				System.out.println(Menu.REPLZ);
-				return checkDel(p, s);
+				return checkup(p, s);
 			}
 		} catch (Exception e) {
 			sc.next();
-			return checkDel(p, s);
+			return checkup(p, s);
 		}
 		switch (answer) {
 		case Menu.YES:

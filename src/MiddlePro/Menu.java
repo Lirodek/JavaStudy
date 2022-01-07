@@ -7,4 +7,6 @@ public interface Menu {
 	String FAIL = "검색실패";
 	String CACEL = "취소";
 	String REPLZ = "잘못 입력하였습니다.\n다시 입력해주세요.";
+	String FILE = "C:\\광민\\Phone.json";
+	String FOLDER =  "C:\\광민";
 }

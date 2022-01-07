@@ -1,15 +1,13 @@
 package MiddleController;
 
-import java.util.ArrayList;
-
 import MiddlePro.Menu;
-import MiddlePro.PhoneInfo;
 import MiddlePro.PhoneManager;
 
 public class Control {
 	private Container pc = new Container();
 	private PhoneManager pm = new PhoneManager();
 	public void action() {
+		pm.SaveFile();
 		if(R.choice==0) {
 			pc.run(R.vMenu);
 		}
@@ -53,11 +51,16 @@ public class Control {
 			}
 			break;
 		case 6:
-			pc.run(R.vBring);
+			pc.run(R.vAllDelete);
+			if(pm.allDalete()) {
+				System.out.println("데이터 삭제를 완료했습니다.");
+			} else {
+				System.out.println("데이터 삭제를 취소했습니다.");
+			}
 			break;
 		case 7:
-			pc.run(R.vSave);
-			pm.SaveFile();
+			pc.run(R.vEnd);
+			System.exit(0);
 			break;
 		}
 		R.choice=0;

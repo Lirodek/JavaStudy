@@ -1,6 +1,5 @@
 package MiddleView;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import MiddleController.R;

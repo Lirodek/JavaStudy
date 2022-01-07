@@ -24,7 +24,7 @@ public class MiddleView {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			
-			sc.nextLine();
+			sci.nextLine();
 			return setInteger(s);
 		}
 		return num;
