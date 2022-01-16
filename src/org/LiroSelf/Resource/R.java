@@ -1,16 +1,28 @@
 package org.LiroSelf.Resource;
 
+import java.util.HashMap;
+import java.util.Vector;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.table.DefaultTableModel;
+
+import org.LiroSelf.Controller.Controller;
+import org.LiroSelf.Model.DataAcess;
+import org.LiroSelf.Model.DataMake;
+
+
 
 public interface R {
 	String title = "Title Pro";
-	final int frameWidth=720, frameHeight=480;
+	final int frameWidth=720, frameHeight=580;
 	
 	public static final int txtSIZE = 10; 
 	public static final int firstSIZE = 3;
@@ -18,15 +30,19 @@ public interface R {
 	
 	JTextField txtName = new JTextField(txtSIZE);
 	JTextField txtSmall = new JTextField(firstSIZE);
-	JTextField txtFirst = new JTextField(phoneSIZE);
-	JTextField txtlast = new JTextField(phoneSIZE);
 	
+	JTextField txtFirst = new JTextField(phoneSIZE);
+	JTextField txtLast = new JTextField(phoneSIZE);
+	
+	public static ButtonGroup groupRadi = new ButtonGroup();
 	JRadioButton radiMan = new JRadioButton();
 	JRadioButton radiWoman = new JRadioButton();
 	
 	String countryValue[] = {"한국", "미국", "일본", "중국", "독일"};
 	JComboBox<String> combocountry = new JComboBox<String>(countryValue);
 	
+	SpinnerNumberModel model = new SpinnerNumberModel(24, 0, 100, 1);
+	JSpinner spinAge = new JSpinner(model);
 	JCheckBox range = new JCheckBox();
 	
 	JCheckBox checkJava = new JCheckBox("자바");
@@ -38,7 +54,21 @@ public interface R {
 	JButton btnInsert = new JButton("추가");
 	JButton btnModi = new JButton("수정");
 	JButton btnDelete = new JButton("삭제");
-	JButton btnExit = new JButton("종료");
+	JButton btnAll = new JButton("전체보기");
+	
+	Vector dataVector = new Vector();
+	Vector cloumnIndentifiers = new Vector();
+	DefaultTableModel tableModel = new DefaultTableModel(dataVector, cloumnIndentifiers) 
+	{
+		public boolean isCellEditable(int rowIdx, int mColIdx) {
+			return false;
+		}
+	};
+	
+	JTable table = new JTable(tableModel);
+	DataAcess dao = new DataAcess();
+	
+	public static HashMap<JButton, Controller> ctrlMap = new HashMap<>();
 	
 	
 	

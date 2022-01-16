@@ -1,5 +1,9 @@
 package org.LiroSelf.View;
 
+import java.awt.Color;
+
+import org.LiroSelf.Event.ButtonEvent;
+
 public class BtnTitle extends View {
 	public BtnTitle() {
 		display();
@@ -10,7 +14,17 @@ public class BtnTitle extends View {
 		add(btnInsert);
 		add(btnModi);
 		add(btnDelete);
-		add(btnExit);
+		add(btnAll);
+		
+		ButtonEvent event = new ButtonEvent(this);
+		btnSearch.addActionListener(event);
+		btnInsert.addActionListener(event);
+		btnModi.addActionListener(event);
+		btnDelete.addActionListener(event);
+		btnAll.addActionListener(event);
+		
+		setBackground(Color.gray);
+		
 
 	}
 

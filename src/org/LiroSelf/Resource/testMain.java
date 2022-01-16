@@ -31,6 +31,10 @@ public class testMain extends JFrame {
 		comboTest();
 		ceheckTest();
 		contentPan.add(panel);
+		String a = "한";
+		int i = a.charAt(0);
+		i/=1000;
+		System.out.println(i);
 		
 		
 	}
