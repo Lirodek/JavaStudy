@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -27,8 +28,8 @@ public class SearchFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public SearchFrame(DataMake dto) {
-		
+	public SearchFrame(Vector<DataMake> dto) {
+		Vector data = new Vector();
 		setVisible(true);
 		setBounds(100, 100, 600, 150);
 		setting(600,150);
@@ -42,8 +43,12 @@ public class SearchFrame extends JFrame {
 		secretColumn.add("성   별");
 		secretColumn.add("국   가");
 		secretColumn.add("언   어");
-		Vector data = new Vector();
-		data.add(dto.getVectorAll());
+		Iterator<DataMake> itr = dto.iterator();
+		while(itr.hasNext()) {
+			DataMake make = itr.next();
+			data.add(make.getVectorAll()
+					);
+		}
 		DefaultTableModel searchModel = new DefaultTableModel(data, secretColumn) {
 			public boolean isCellEditable(int rowIdx, int mColIdx) {
 				return false;

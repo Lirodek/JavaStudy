@@ -26,6 +26,15 @@ public class DataMake {
 		this.ranguage = ranguage;
 		this.phoneNumber = phoneNumber;
 	}
+	public DataMake(int no, String name, int age, String phoneNumber, String sex, String nation, String ranguage, String specialNumber) {
+		this.name = name;
+		this.age = age;
+		this.sex = sex;
+		this.nation = nation;
+		this.ranguage = ranguage;
+		this.phoneNumber = phoneNumber;
+		this.specialNumber = specialNumber;
+	}
 
 	public int getNo() {
 		return no;

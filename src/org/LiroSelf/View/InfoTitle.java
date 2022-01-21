@@ -14,6 +14,7 @@ public class InfoTitle extends View {
 		table.getTableHeader().setReorderingAllowed(false);
 		table.getTableHeader().setResizingAllowed(false);
 		display();
+		ctrlMap.get(btnAll).service();
 	}
 	@Override
 	public void display() {

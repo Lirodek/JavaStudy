@@ -21,6 +21,7 @@ public class MainFrame extends JFrame implements R{
 	View viewBtn = new BtnTitle();
 	View viewInto = new InfoTitle();
 	public MainFrame(String title, int w, int h) {
+		
 		contentPane = getContentPane();
 		super.setTitle(title);
 		super.setSize(w, h);

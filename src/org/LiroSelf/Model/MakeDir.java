@@ -19,8 +19,7 @@ public class MakeDir {
 			} catch(Exception e) {
 				e.getStackTrace();
 			}
-		} else {}
-		try {
+		} else {}		try {
 			if(file.createNewFile()){
 				System.out.println(file.getName()+"을 생성합니다.");
 			}

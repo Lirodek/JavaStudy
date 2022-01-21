@@ -1,0 +1,27 @@
+package org.LiroSelf.Event;
+
+import org.LiroSelf.Controller.Controller;
+import org.LiroSelf.Model.DataMake;
+
+public class InsertController implements Controller{
+	
+	@Override
+	public void service() {
+		DataMake dm = new DataMake(); 
+		
+		String name = txtName.getText();//�씠由�
+		System.out.println(name);
+		String nation = combocountry.getSelectedItem().toString();
+		String firstPhone = txtFirst.getText();
+		String secondPhone = txtLast.getText();
+		int sex = groupRadi.getButtonCount();//�꽦蹂�
+		int age = ( int )spinAge.getValue();
+		boolean java = checkJava.isSelected();
+		boolean cottlean = checkCottle.isSelected();
+		boolean phyton = checkPhyton.isSelected();
+		boolean C = checkC.isSelected();
+
+		
+	}
+	
+}

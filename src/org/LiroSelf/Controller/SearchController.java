@@ -1,5 +1,7 @@
 package org.LiroSelf.Controller;
 
+import java.util.Vector;
+
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
@@ -10,13 +12,14 @@ public class SearchController implements Controller{
 
 	@Override
 	public void service() {
-		DataMake dto = new DataMake();
+		Vector<DataMake> vector = new Vector<DataMake>();
 		String name = JOptionPane.showInputDialog("이름 검색");
-		dto = dao.searchData(name);
-		if(dto == null) {
+		vector = dao.searchData(name);
+		if(vector == null) {
 			JOptionPane.showMessageDialog(new JButton("확인"), name+"을 찾지못했습니다.");
 		} else {
-			SearchFrame sFrame = new SearchFrame(dto);
+			SearchFrame sFrame = new SearchFrame(vector);
+			
 		}
 		
 	}
