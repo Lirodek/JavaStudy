@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -25,7 +24,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     public DataBaseHelper(Context context){
         super(context, DB_NAME, null, 1 );
-        if(android.os.Build.VERSION.SDK_INT >= 17){
+        if(android.os.Build.VERSION.SDK_INT >= 11){
             DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
         }
         else

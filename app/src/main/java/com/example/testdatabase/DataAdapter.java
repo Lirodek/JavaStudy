@@ -14,59 +14,47 @@ public class DataAdapter {
     protected static final String TAG = "DataAdapter";
 
     // TODO : TABLE 이름을 명시해야함
-    protected static final String TABLE_NAME = "test";
+    protected static final String TABLE_NAME = "engword";
 
     private final Context mContext;
     private SQLiteDatabase mDb;
     private DataBaseHelper mDbHelper;
 
-    public DataAdapter(Context context)
-    {
+    public DataAdapter(Context context) {
         this.mContext = context;
         mDbHelper = new DataBaseHelper(mContext);
     }
 
-    public DataAdapter createDatabase() throws SQLException
-    {
-        try
-        {
+    public DataAdapter createDatabase() throws SQLException {
+        try {
             mDbHelper.createDataBase();
-        }
-        catch (IOException mIOException)
-        {
+        } catch (IOException mIOException) {
             Log.e(TAG, mIOException.toString() + "  UnableToCreateDatabase");
             throw new Error("UnableToCreateDatabase");
         }
         return this;
     }
 
-    public DataAdapter open() throws SQLException
-    {
-        try
-        {
+    public DataAdapter open() throws SQLException {
+        try {
             mDbHelper.openDataBase();
             mDbHelper.close();
             mDb = mDbHelper.getReadableDatabase();
-        }
-        catch (SQLException mSQLException)
-        {
-            Log.e(TAG, "open >>"+ mSQLException.toString());
+        } catch (SQLException mSQLException) {
+            Log.e(TAG, "open >>" + mSQLException.toString());
             throw mSQLException;
         }
         return this;
     }
 
-    public void close()
-    {
+    public void close() {
         mDbHelper.close();
     }
 
-    public List getTableData()
-    {
-        try
-        {
+    public List getTableData() {
+        try {
             // Table 이름 -> antpool_bitcoin 불러오기
-            String sql  = "SELECT * FROM " + TABLE_NAME;
+            String sql = "SELECT * FROM " + TABLE_NAME;
 
             // 모델 넣을 리스트 생성
             List dbList = new ArrayList();
@@ -75,10 +63,9 @@ public class DataAdapter {
             Directory db = null;
 
             Cursor mCur = mDb.rawQuery(sql, null);
-            if (mCur!=null)
-            {
+            if (mCur != null) {
                 // 칼럼의 마지막까지
-                while( mCur.moveToNext() ) {
+                while (mCur.moveToNext()) {
 
                     // TODO : 커스텀 모델 생성
                     db = new Directory();
@@ -93,13 +80,41 @@ public class DataAdapter {
                     // 리스트에 넣기
                     dbList.add(db);
                 }
-
             }
             return dbList;
+        } catch (SQLException mSQLException) {
+            Log.e(TAG, "getTestData >>" + mSQLException.toString());
+            throw mSQLException;
         }
-        catch (SQLException mSQLException)
-        {
-            Log.e(TAG, "getTestData >>"+ mSQLException.toString());
+    }
+
+    public List getTable() {
+        try {
+            // Table 이름 -> antpool_bitcoin 불러오기
+            String sql = "SELECT * FROM " + "jpnword";
+
+            // 모델 넣을 리스트 생성
+            List dbList = new ArrayList();
+
+            // TODO : 모델 선언
+            JapanDirectory jdb = null;
+
+            Cursor mCur = mDb.rawQuery(sql, null);
+            if (mCur != null) {
+                // 칼럼의 마지막까지
+                while (mCur.moveToNext()) {
+                    jdb = new JapanDirectory();
+
+                    jdb.setWord(mCur.getString(0));
+                    jdb.setMeaning(mCur.getString(1));
+
+
+                    dbList.add(jdb);
+                }
+            }
+            return dbList;
+        } catch (SQLException mSQLException) {
+            Log.e(TAG, "getTestData >>" + mSQLException.toString());
             throw mSQLException;
         }
     }
