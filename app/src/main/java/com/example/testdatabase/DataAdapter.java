@@ -118,4 +118,34 @@ public class DataAdapter {
             throw mSQLException;
         }
     }
+    public List getBenPick() {
+        try {
+            // Table 이름 -> antpool_bitcoin 불러오기
+            String sql = "SELECT * FROM " + "compleat";
+
+            // 모델 넣을 리스트 생성
+            List dbList = new ArrayList();
+
+            // TODO : 모델 선언
+            BenPick ben = null;
+
+            Cursor mCur = mDb.rawQuery(sql, null);
+            if (mCur != null) {
+                // 칼럼의 마지막까지
+                while (mCur.moveToNext()) {
+                    ben = new BenPick();
+
+                    ben.setEng(mCur.getString(0));
+                    ben.setJapan(mCur.getString(1));
+
+
+                    dbList.add(ben);
+                }
+            }
+            return dbList;
+        } catch (SQLException mSQLException) {
+            Log.e(TAG, "getTestData >>" + mSQLException.toString());
+            throw mSQLException;
+        }
+    }
 }

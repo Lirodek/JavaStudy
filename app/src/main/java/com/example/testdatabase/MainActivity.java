@@ -3,7 +3,9 @@ package com.example.testdatabase;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
@@ -22,13 +24,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CustomAdapter.ListBtnClickListener {
     public List<Directory> DirList;
     public List<JapanDirectory> JapanDirList;
     Button fclrear;
     OnItemClick listClick = new OnItemClick();
+    List<BenPick> benList = new ArrayList<BenPick>();
     EditText edtFilter;
     TextView maintv, subtv;
     ImageButton imageButton;
@@ -57,10 +61,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //====================리스트뷰 파트====================
+        CustomAdapter adapter;
+        ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
+        adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
+        loadItemsFromDB(items);
         list = (ListView) findViewById(R.id.listView1); // activiry_Main에 있는 ListView를 불러와줍니다.
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, word); // ListView에 값을 넣어줍니다.
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_list_item_1, word); // ListView에 값을 넣어줍니다.
         list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         list.setAdapter(adapter);
 
@@ -102,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
         DataAdapter mDbHelper = new DataAdapter(getApplicationContext());
         mDbHelper.createDatabase();
         mDbHelper.open();
+        benList = mDbHelper.getBenPick();
+        System.out.println(benList.toString());
         if (language == true) {
             DirList = mDbHelper.getTableData();
         } else {
@@ -113,6 +123,29 @@ public class MainActivity extends AppCompatActivity {
 
         mDbHelper.close();
 
+
+    }
+    public boolean loadItemsFromDB(ArrayList<ListViewBtnItem> list) {
+        ListViewBtnItem item ;
+
+
+        if (list == null) {
+            list = new ArrayList<ListViewBtnItem>() ;
+        }
+
+        // 순서를 위한 i 값을 1로 초기화.
+        for(int i=0;i<DirList.size();i++) {
+            // 아이템 생성.
+            item = new ListViewBtnItem();
+            item.setText(Integer.toString(i) + ". "+DirList.get(i).getWord());
+            list.add(item);
+        }
+
+        return true ;
+    }
+
+    @Override
+    public void onListBtnClick(int position) {
 
     }
 
@@ -128,10 +161,14 @@ public class MainActivity extends AppCompatActivity {
             imageButton = (ImageButton) dialogView.findViewById(R.id.imageBtn);
             AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
             //idx를 가져오기 위한 vo 선언
-            String vo = (String) parent.getAdapter().getItem(position);
-            int idx = indexMaker(vo);
+            final int pos = position;
+            System.out.println(pos +", "+parent.getAdapter().getItem(position).toString());
+            String vo = (String) parent.getAdapter().getItem(position).toString();
+
+
+            int idx = indexMaker(vo)+1;
             // dialog textBox를 채우는 부분
-            maintv.setText(" " + DirList.get(idx).getWord());
+            maintv.setText(DirList.get(idx).getWord());
             subtv.setText(DirList.get(idx).getMeaning());
             dlg.setView(dialogView);
             //====================리스트뷰 안에 사전 이미지 버튼을 클릭할때 발생하는 이밴트====================
