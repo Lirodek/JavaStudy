@@ -29,7 +29,6 @@ public class CustomAdapter extends ArrayAdapter implements View.OnClickListener,
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
     }
 
 
@@ -37,22 +36,13 @@ public class CustomAdapter extends ArrayAdapter implements View.OnClickListener,
     int resourceId;
     ListBtnClickListener listBtnClickListener;
     Context context;
-    List<Directory> DirList;
 
-    private void initLoadDB() {
-        DataAdapter mDbHelper = new DataAdapter(context);
-        mDbHelper.createDatabase();
-        mDbHelper.open();
-        DirList = mDbHelper.getTableData();
-        mDbHelper.close();
-    }
     public CustomAdapter(Context context, int resource, ArrayList<ListViewBtnItem> list,
                          ListBtnClickListener clickListener){
         super(context, resource, list);
         this.context = context;
         resourceId =resource;
         this.listBtnClickListener = clickListener;
-        initLoadDB();
     }
 
     @Override
@@ -70,7 +60,6 @@ public class CustomAdapter extends ArrayAdapter implements View.OnClickListener,
 
         // 화면에 표시될 View(Layout이 inflate된)로 부터 위젯에 대한 참조 획득
         final ImageView iconImageViewRight = (ImageView) converView.findViewById(R.id.imageRight);
-        final ImageView iconImageViewLeft = (ImageView) converView.findViewById(R.id.imageLeft);
         final TextView textView = (TextView) converView.findViewById(R.id.wordName);
         holder = new ViewHolder(textView);
 
@@ -88,21 +77,6 @@ public class CustomAdapter extends ArrayAdapter implements View.OnClickListener,
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 context.startActivity(intent);
 
-            }
-        });
-        iconImageViewLeft.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if(holder.check == true) {
-                    holder.word.setPaintFlags(textView.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-
-                    holder.check = false;
-                } else {
-                    holder.word.setPaintFlags(0);
-                    holder.check = true;
-                }
-                System.out.println(holder.check);
             }
         });
 

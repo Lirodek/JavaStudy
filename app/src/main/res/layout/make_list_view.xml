@@ -13,19 +13,14 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:text="테스트 문자"/>
-    <ImageView
-        android:id="@+id/imageLeft"
-        android:layout_gravity="left"
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/xsign"/>
+
     <ImageView
         android:id="@+id/imageRight"
         android:layout_gravity="right"
         android:layout_weight="1"
+        android:paddingRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:src="@drawable/lib"/>
+        android:src="@drawable/lib3"/>
 
 </LinearLayout>

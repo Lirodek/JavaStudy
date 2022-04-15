@@ -1,19 +1,23 @@
 package com.example.testdatabase;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,8 +33,14 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements CustomAdapter.ListBtnClickListener {
     public List<Directory> DirList;
+    public List<Directory> clearList = new ArrayList<Directory>();
     public List<JapanDirectory> JapanDirList;
-    Button fclrear;
+    private List<Directory> starList = new ArrayList<Directory>();
+    private CustomAdapter adapter;
+
+    MenuItem diretory, star, graduated;
+    List<Directory> tempList;
+    Button clear2;
     OnItemClick listClick = new OnItemClick();
     List<BenPick> benList = new ArrayList<BenPick>();
     EditText edtFilter;
@@ -39,10 +49,12 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
     ListView list;
     boolean language = true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("단어장");
         //====================DB 파트====================
         initLoadDB();// database에 값을 가져옵니다
         edtFilter = findViewById(R.id.textFilter);
@@ -52,16 +64,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
         for (int i = 0; i < DirList.size(); i++) {
             word[i] = (i + 1) + ". " + DirList.get(i).getWord(); // 형식은 1.word 방식으로 넣어줄겁니다.
         }
-
-        fclrear = (Button) findViewById(R.id.filterClrear);
-        fclrear.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                edtFilter.setText("");
-            }
-        });
         //====================리스트뷰 파트====================
-        CustomAdapter adapter;
+
         ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
         adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
         loadItemsFromDB(items);
@@ -102,8 +106,50 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        diretory = menu.findItem(R.id.language_dir);
+        star = menu.findItem(R.id.language_star);
+        graduated = menu.findItem(R.id.language_ben);
         language = false;
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        System.out.println(item);
+        if(item.toString().compareTo("외운단어") == 0){
+            ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
+            adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
+            tempList = clearList;
+            loadItemsFromDB(items);
+            adapter.notifyDataSetChanged();
+            list.setAdapter(adapter);
+            item.setVisible(false);
+            diretory.setVisible(true);
+            star.setVisible(true);
+
+        } else if(item.toString().compareTo("단어장") == 0){
+            ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
+            adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
+            tempList = DirList;
+            loadItemsFromDB(items);
+            adapter.notifyDataSetChanged();
+            list.setAdapter(adapter);
+            item.setVisible(false);
+            graduated.setVisible(true);
+            star.setVisible(true);
+        } else if (item.toString().compareTo("중요단어") == 0){
+            ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
+            adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
+            tempList = starList;
+            loadItemsFromDB(items);
+            adapter.notifyDataSetChanged();
+            list.setAdapter(adapter);
+            item.setVisible(false);
+            graduated.setVisible(true);
+            diretory.setVisible(true);
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initLoadDB() {
@@ -117,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
         } else {
             DirList = mDbHelper.getTable();
         }
+        tempList = DirList;
 
 
         System.out.println(JapanDirList);
@@ -134,10 +181,10 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
         }
 
         // 순서를 위한 i 값을 1로 초기화.
-        for(int i=0;i<DirList.size();i++) {
+        for(int i=0;i<tempList.size();i++) {
             // 아이템 생성.
             item = new ListViewBtnItem();
-            item.setText(Integer.toString(i) + ". "+DirList.get(i).getWord());
+            item.setText(Integer.toString(i) + ". "+tempList.get(i).getWord());
             list.add(item);
         }
 
@@ -159,27 +206,65 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
             maintv = (TextView) dialogView.findViewById(R.id.txtMain);
             subtv = (TextView) dialogView.findViewById(R.id.txt1);
             imageButton = (ImageButton) dialogView.findViewById(R.id.imageBtn);
+            clear2 = (Button) dialogView.findViewById(R.id.clearBtn);
             AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
             //idx를 가져오기 위한 vo 선언
             final int pos = position;
-            System.out.println(pos +", "+parent.getAdapter().getItem(position).toString());
+            String word = parent.getAdapter().getItem(position).toString();
+            word = wordMaker(word);
+            Directory dir = dirSrearch(word);
             String vo = (String) parent.getAdapter().getItem(position).toString();
 
 
             int idx = indexMaker(vo)+1;
+            if(dir.getStar().compareTo("yes") == 0){
+                imageButton.setImageResource(R.drawable.starlight);
+            }
+            if(dir.getClear().compareTo("학습끝") == 0){
+                clear2.setText("학습끝");
+            }
             // dialog textBox를 채우는 부분
-            maintv.setText(DirList.get(idx).getWord());
-            subtv.setText(DirList.get(idx).getMeaning());
+
+            System.out.println();
+            maintv.setText(dir.getWord());
+            subtv.setText(dir.getMeaning());
             dlg.setView(dialogView);
             //====================리스트뷰 안에 사전 이미지 버튼을 클릭할때 발생하는 이밴트====================
             imageButton.setOnClickListener(new View.OnClickListener() {
+                Directory dir;
                 @Override
                 public void onClick(View v) {
-                    String word = DirList.get(idx).getWord();
-                    Uri uri = uriMake(word);
-                    //인터넷창에 띄워줍니다.
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    startActivity(intent);
+                    dir = dirSrearch(maintv.getText().toString());
+                    if(dir.getStar().equals("no")){
+                        imageButton.setImageResource(R.drawable.starlight);
+                        dir.setStar("yes");
+                        starList.add(dir);
+                    } else {
+                        imageButton.setImageResource(R.drawable.star);
+                        dir.setStar("no");
+                        starList.remove(dir);
+                    }
+                }
+            });
+            clear2.setOnClickListener(new View.OnClickListener() {
+                Directory dir;
+                @Override
+                public void onClick(View v) {
+                    if(clear2.getText().toString().equals("학습중")) {
+                        clear2.setText("학습끝");
+                        DirList.get(idx).setClear("학습끝");
+                        dir = dirSrearch(maintv.getText().toString());
+                        clearList.add(dir);
+
+                    } else {
+                        clear2.setText("학습중");
+                        DirList.get(idx).setClear("학습중");
+                        dir = dirSrearch(maintv.getText().toString());
+                        clearList.remove(dir);
+
+
+
+                    }
                 }
             });
             dlg.setNegativeButton("닫기", new DialogInterface.OnClickListener() {
@@ -191,20 +276,35 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
 
         }
 
-        // url을 만들어주기 위한 매서드
-        private Uri uriMake(String word) {
-            String url = "https://en.dict.naver.com/#/search?query=";
-            //클릭한 ListView의 값을 가져와줍니다
-            return Uri.parse(url + word); //링크와 합성해서
-
-        }
-
         // idx를 만들어주기 위한 메서드
         private int indexMaker(String vo) {
             String[] cut = vo.split(". ");
             int idx = Integer.valueOf(cut[0]) - 1;
 
             return idx;
+        }
+    }
+    private String wordMaker(String vo) {// 숫자랑 문자 원심분리기 ㅋㅋ
+        String[] cut = vo.split(". ");
+        String word = String.valueOf(cut[1]);
+
+        return word;
+    }
+    private Directory dirSrearch(String word){ // word값을 가지고 DirList에서 값을 까져옴
+        Directory dir = new Directory(word);
+        for(int i=0 ; i<DirList.size();i++){
+            if(DirList.get(i).equals(dir)){
+                dir = DirList.get(i);
+            }
+        }
+        return dir;
+    }
+    private void updateClearList(Directory dir){
+        for(int i = 0 ; i < clearList.size() ; i++){
+            if(clearList.get(i).equals(dir)){
+                clearList.get(i).setStar(dir.getStar());
+                clearList.get(i).setClear(dir.getClear());
+            }
         }
     }
 }

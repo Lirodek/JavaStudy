@@ -2,8 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/language_jpan"
-        android:title="일본어사전"
-        app:showAsAction="collapseActionView"/>
+    <item android:id="@+id/language_star"
+        android:title="중요단어"
+        android:visible="true"
+        app:showAsAction="always"/>
+    <item android:id="@+id/language_ben"
+        android:title="외운단어"
+        android:visible="true"
+        app:showAsAction="always"/>
+    <item android:id="@+id/language_dir"
+        android:title="단어장"
+        android:visible="false"
+        app:showAsAction="always"/>
 
 </menu>

@@ -76,6 +76,8 @@ public class DataAdapter {
                     db.setDivision(mCur.getString(1));
                     db.setWord(mCur.getString(2));
                     db.setMeaning(mCur.getString(3));
+                    db.setClear(mCur.getString(4));
+                    db.setStar(mCur.getString(5));
 
                     // 리스트에 넣기
                     dbList.add(db);
