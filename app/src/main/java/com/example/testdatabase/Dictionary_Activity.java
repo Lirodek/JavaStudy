@@ -34,14 +34,17 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
 
     MenuItem diretory, star, graduated;
     List<Directory> tempList; // 현재 사용할 List를 갱신해주는 역활
-    Button clear2;
     OnItemClick listClick = new OnItemClick();
     List<BenPick> benList = new ArrayList<BenPick>();
     EditText edtFilter;
     TextView maintv, subtv;
     ImageButton imageButton;
+    ImageButton clear2;
     ListView list;
     boolean language = true;
+    public List<Directory> getDirectory(){
+        return DirList;
+    }
 
 
     @Override
@@ -62,12 +65,10 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
         //====================리스트뷰 파트====================
 
         ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this);
+        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this, DirList);
         loadItemsFromDB(items);
         list = (ListView) findViewById(R.id.listView1); // activiry_Main에 있는 ListView를 불러와줍니다.
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1, word); // ListView에 값을 넣어줍니다.
         list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         list.setAdapter(adapter);
 
@@ -183,12 +184,10 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
     }
 
     public boolean resetListView(int cehckNumber) {
-        if (cehckNumber == -1 || cehckNumber == 0) {
+        if (cehckNumber == -1) {
             return false;
         }
         tempList = tempReset(cehckNumber);
-        System.out.println(tempList);
-        System.out.println(cehckNumber);
         turnList(tempList);
         return true;
 
@@ -197,8 +196,9 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
     public List<Directory> tempReset(int number) {
 
         switch (number) {
+            case 0:
+                return DirList;
             case 1:
-                System.out.println("이거 실행됨");
                 return clearList;
             case 2:
                 return starList;
@@ -271,7 +271,7 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
     // Click한 메뉴에 따라 리스트 뷰를 교체해서 보여지 Activity(ListView)를 변경해주는 함수
     public void turnList(List dictionaryList) {
         ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this);
+        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this, tempList);
         loadItemsFromDB(items);
         adapter.notifyDataSetChanged();
         list.setAdapter(adapter);
@@ -317,7 +317,7 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
             maintv = (TextView) dialogView.findViewById(R.id.txtMain);
             subtv = (TextView) dialogView.findViewById(R.id.txt1);
             imageButton = (ImageButton) dialogView.findViewById(R.id.imageBtn);
-            clear2 = (Button) dialogView.findViewById(R.id.clearBtn);
+            clear2 = (ImageButton) dialogView.findViewById(R.id.clearBtn);
             AlertDialog.Builder dlg = new AlertDialog.Builder(Dictionary_Activity.this);
             //idx를 가져오기 위한 vo 선언
             final int pos = position;
@@ -333,7 +333,7 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
                 imageButton.setImageResource(R.drawable.starlight);
             }
             if (dir.getClear().compareTo("학습끝") == 0) {
-                clear2.setText("학습끝");
+                clear2.setImageResource(R.drawable.study);
             }
             // dialog textBox를 채우는 부분
             maintv.setText(dir.getWord());
@@ -342,7 +342,6 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
             //====================리스트뷰 안에 사전 이미지 버튼을 클릭할때 발생하는 이밴트====================
             imageButton.setOnClickListener(new View.OnClickListener() {
                 Directory dir;
-
                 @Override
                 public void onClick(View v) {
                     dir = dirSrearch(maintv.getText().toString());
@@ -359,19 +358,16 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
             });
             clear2.setOnClickListener(new View.OnClickListener() {
                 Directory dir;
-
                 @Override
                 public void onClick(View v) {
-                    if (clear2.getText().toString().equals("학습중")) {
-
-                        clear2.setText("학습끝");
-                        DirList.get(idx).setClear("학습끝");
-                        dir = dirSrearch(maintv.getText().toString());
+                    dir = dirSrearch(maintv.getText().toString());
+                    if (dir.getClear().equals("학습중")) {
+                        clear2.setImageResource(R.drawable.study);
+                        dir.setClear("학습끝");
                         clearList.add(dir);
                     } else {
-                        clear2.setText("학습중");
-                        DirList.get(idx).setClear("학습중");
-                        dir = dirSrearch(maintv.getText().toString());
+                        clear2.setImageResource(R.drawable.studying);
+                        dir.setClear("학습중");
                         clearList.remove(dir);
                     }
                 }

@@ -34,11 +34,12 @@
             android:gravity="end">
 
 
-            <Button
+            <ImageButton
                 android:id="@+id/clearBtn"
-                android:layout_width="80dp"
-                android:layout_height="50dp"
-                android:text="학습중" />
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:src="@drawable/studying" />
 
             <ImageButton
                 android:id="@+id/imageBtn"
