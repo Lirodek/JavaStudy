@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DataBaseHelper extends SQLiteOpenHelper {
+public class Dictionary_CustomAdapter_DataBase_Helper extends SQLiteOpenHelper {
     private static String TAG = "DataBaseHelper";
 
     private String DB_PATH = "";
@@ -22,7 +22,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private SQLiteDatabase mDataBase;
     private final Context mContext;
 
-    public DataBaseHelper(Context context){
+    public Dictionary_CustomAdapter_DataBase_Helper(Context context){
         super(context, DB_NAME, null, 1 );
         if(android.os.Build.VERSION.SDK_INT >= 11){
             DB_PATH = context.getApplicationInfo().dataDir + "/databases/";

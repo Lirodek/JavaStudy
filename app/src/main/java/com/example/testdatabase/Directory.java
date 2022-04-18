@@ -9,10 +9,20 @@ public class Directory {
     public String meaning; // 단어의 뜻
     public String clear;
     public String star;
+    public int directoryCheck=0;
     Directory(){}
     Directory(String word){
         this.word = word;
     }
+
+    public int getDirectoryCheck() {
+        return directoryCheck;
+    }
+
+    public void setDirectoryCheck(int directoryCheck) {
+        this.directoryCheck = directoryCheck;
+    }
+
     public String getStar() {
         return star;
     }

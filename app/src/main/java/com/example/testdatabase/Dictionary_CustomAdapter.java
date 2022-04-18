@@ -21,7 +21,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomAdapter extends ArrayAdapter implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnClickListener, AdapterView.OnItemClickListener {
     @Override
     public String toString() {
         return "";
@@ -37,7 +37,7 @@ public class CustomAdapter extends ArrayAdapter implements View.OnClickListener,
     ListBtnClickListener listBtnClickListener;
     Context context;
 
-    public CustomAdapter(Context context, int resource, ArrayList<ListViewBtnItem> list,
+    public Dictionary_CustomAdapter(Context context, int resource, ArrayList<ListViewBtnItem> list,
                          ListBtnClickListener clickListener){
         super(context, resource, list);
         this.context = context;

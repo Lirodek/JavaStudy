@@ -1,18 +1,10 @@
 package com.example.testdatabase;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import android.content.ClipData;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.TypedArray;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,26 +12,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CustomAdapter.ListBtnClickListener {
+public class Dictionary_Activity extends AppCompatActivity implements Dictionary_CustomAdapter.ListBtnClickListener {
     public List<Directory> DirList;
     public List<Directory> clearList = new ArrayList<Directory>();
     public List<JapanDirectory> JapanDirList;
     private List<Directory> starList = new ArrayList<Directory>();
-    private CustomAdapter adapter;
+    private Dictionary_CustomAdapter adapter;
 
     MenuItem diretory, star, graduated;
-    List<Directory> tempList;
+    List<Directory> tempList; // 현재 사용할 List를 갱신해주는 역활
     Button clear2;
     OnItemClick listClick = new OnItemClick();
     List<BenPick> benList = new ArrayList<BenPick>();
@@ -53,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.dictionary_activity);
         setTitle("단어장");
         //====================DB 파트====================
         initLoadDB();// database에 값을 가져옵니다
@@ -67,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
         //====================리스트뷰 파트====================
 
         ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-        adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
+        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this);
         loadItemsFromDB(items);
         list = (ListView) findViewById(R.id.listView1); // activiry_Main에 있는 ListView를 불러와줍니다.
 
@@ -102,58 +92,50 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
 
 
     }
-
+    // 메뉴 관련 초기화 함수
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.dictionary_menu, menu);
         diretory = menu.findItem(R.id.language_dir);
         star = menu.findItem(R.id.language_star);
         graduated = menu.findItem(R.id.language_ben);
         language = false;
         return true;
     }
-
+    // 메뉴버튼 클릭시 발생하는 이벤트
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         System.out.println(item);
-        if(item.toString().compareTo("외운단어") == 0){
-            ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-            adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
-            tempList = clearList;
-            loadItemsFromDB(items);
-            adapter.notifyDataSetChanged();
-            list.setAdapter(adapter);
-            item.setVisible(false);
-            diretory.setVisible(true);
-            star.setVisible(true);
+        String getItem = item.toString();
+        switch(getItem){
+            case "외운단어":
+                tempList = clearList;
+                turnList(tempList);
+                menuVisible(1);
+                // 메뉴 보기 Visible
+                break;
 
-        } else if(item.toString().compareTo("단어장") == 0){
-            ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-            adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
-            tempList = DirList;
-            loadItemsFromDB(items);
-            adapter.notifyDataSetChanged();
-            list.setAdapter(adapter);
-            item.setVisible(false);
-            graduated.setVisible(true);
-            star.setVisible(true);
-        } else if (item.toString().compareTo("중요단어") == 0){
-            ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-            adapter = new CustomAdapter(this, R.layout.make_list_view, items, this);
-            tempList = starList;
-            loadItemsFromDB(items);
-            adapter.notifyDataSetChanged();
-            list.setAdapter(adapter);
-            item.setVisible(false);
-            graduated.setVisible(true);
-            diretory.setVisible(true);
+            case "단어장":
+                tempList = DirList;
+                turnList(tempList);
+                menuVisible(2);
+                break;
+
+            case "중요단어":
+                tempList = starList;
+                turnList(tempList);
+                menuVisible(3);
+                break;
 
         }
         return super.onOptionsItemSelected(item);
     }
+    public void checkTempList(){
 
+    }
+    // 데이터베이스 init 함수
     private void initLoadDB() {
-        DataAdapter mDbHelper = new DataAdapter(getApplicationContext());
+        Dictionary_DataBase_Adapter mDbHelper = new Dictionary_DataBase_Adapter(getApplicationContext());
         mDbHelper.createDatabase();
         mDbHelper.open();
         benList = mDbHelper.getBenPick();
@@ -164,31 +146,55 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
             DirList = mDbHelper.getTable();
         }
         tempList = DirList;
-
-
-        System.out.println(JapanDirList);
-
         mDbHelper.close();
-
-
     }
-    public boolean loadItemsFromDB(ArrayList<ListViewBtnItem> list) {
-        ListViewBtnItem item ;
 
+    // ListView에 넣을 item을 초기화해서 변경해주는 함수
+    public boolean loadItemsFromDB(ArrayList<ListViewBtnItem> list) {
+        ListViewBtnItem item;
 
         if (list == null) {
-            list = new ArrayList<ListViewBtnItem>() ;
+            list = new ArrayList<ListViewBtnItem>();
         }
 
         // 순서를 위한 i 값을 1로 초기화.
-        for(int i=0;i<tempList.size();i++) {
+        for (int i = 0; i < tempList.size(); i++) {
             // 아이템 생성.
             item = new ListViewBtnItem();
-            item.setText(Integer.toString(i) + ". "+tempList.get(i).getWord());
+            item.setText(Integer.toString(i) + ". " + tempList.get(i).getWord());
             list.add(item);
         }
+        return true;
+    }
+    // Click한 메뉴에 따라 리스트 뷰를 교체해서 보여지 Activity(ListView)를 변경해주는 함수
+    public void turnList(List dictionaryList) {
+        ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
+        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this);
+        loadItemsFromDB(items);
+        adapter.notifyDataSetChanged();
+        list.setAdapter(adapter);
 
-        return true ;
+    }
+    // 메뉴에 Click시 변경해주는 함수
+    public void menuVisible(int i){
+        switch(i){
+            case 1:
+                graduated.setVisible(false);
+                diretory.setVisible(true);
+                star.setVisible(true);
+                break;
+            case 2:
+                diretory.setVisible(false);
+                graduated.setVisible(true);
+                star.setVisible(true);
+                break;
+            case 3:
+                star.setVisible(false);
+                graduated.setVisible(true);
+                diretory.setVisible(true);
+                break;
+        }
+
     }
 
     @Override
@@ -197,17 +203,17 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
     }
 
     class OnItemClick implements AdapterView.OnItemClickListener {
-
+        List<Directory> tempDictionary;
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // dialogView 관련 선언
-            View dialogView = (View) View.inflate(MainActivity.this,
-                    R.layout.dialog, null);
+            View dialogView = (View) View.inflate(Dictionary_Activity.this,
+                    R.layout.dictionary_dialog, null);
             maintv = (TextView) dialogView.findViewById(R.id.txtMain);
             subtv = (TextView) dialogView.findViewById(R.id.txt1);
             imageButton = (ImageButton) dialogView.findViewById(R.id.imageBtn);
             clear2 = (Button) dialogView.findViewById(R.id.clearBtn);
-            AlertDialog.Builder dlg = new AlertDialog.Builder(MainActivity.this);
+            AlertDialog.Builder dlg = new AlertDialog.Builder(Dictionary_Activity.this);
             //idx를 가져오기 위한 vo 선언
             final int pos = position;
             String word = parent.getAdapter().getItem(position).toString();
@@ -216,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
             String vo = (String) parent.getAdapter().getItem(position).toString();
 
 
-            int idx = indexMaker(vo)+1;
-            if(dir.getStar().compareTo("yes") == 0){
+            int idx = indexMaker(vo) + 1;
+            if (dir.getStar().compareTo("yes") == 0) {
                 imageButton.setImageResource(R.drawable.starlight);
             }
-            if(dir.getClear().compareTo("학습끝") == 0){
+            if (dir.getClear().compareTo("학습끝") == 0) {
                 clear2.setText("학습끝");
             }
             // dialog textBox를 채우는 부분
@@ -235,7 +241,8 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
                 @Override
                 public void onClick(View v) {
                     dir = dirSrearch(maintv.getText().toString());
-                    if(dir.getStar().equals("no")){
+                    if (dir.getStar().equals("no")) {
+                        tempDictionary = tempList;
                         imageButton.setImageResource(R.drawable.starlight);
                         dir.setStar("yes");
                         starList.add(dir);
@@ -248,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
             });
             clear2.setOnClickListener(new View.OnClickListener() {
                 Directory dir;
+
                 @Override
                 public void onClick(View v) {
-                    if(clear2.getText().toString().equals("학습중")) {
+                    if (clear2.getText().toString().equals("학습중")) {
+
                         clear2.setText("학습끝");
                         DirList.get(idx).setClear("학습끝");
                         dir = dirSrearch(maintv.getText().toString());
@@ -262,14 +271,14 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
                         dir = dirSrearch(maintv.getText().toString());
                         clearList.remove(dir);
 
-
-
                     }
                 }
             });
             dlg.setNegativeButton("닫기", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    System.out.println(tempList);
+
                 }
             });
             dlg.show();
@@ -284,24 +293,27 @@ public class MainActivity extends AppCompatActivity implements CustomAdapter.Lis
             return idx;
         }
     }
+
     private String wordMaker(String vo) {// 숫자랑 문자 원심분리기 ㅋㅋ
         String[] cut = vo.split(". ");
         String word = String.valueOf(cut[1]);
 
         return word;
     }
-    private Directory dirSrearch(String word){ // word값을 가지고 DirList에서 값을 까져옴
+
+    private Directory dirSrearch(String word) { // word값을 가지고 DirList에서 값을 까져옴
         Directory dir = new Directory(word);
-        for(int i=0 ; i<DirList.size();i++){
-            if(DirList.get(i).equals(dir)){
+        for (int i = 0; i < DirList.size(); i++) {
+            if (DirList.get(i).equals(dir)) {
                 dir = DirList.get(i);
             }
         }
         return dir;
     }
-    private void updateClearList(Directory dir){
-        for(int i = 0 ; i < clearList.size() ; i++){
-            if(clearList.get(i).equals(dir)){
+
+    private void updateClearList(Directory dir) {
+        for (int i = 0; i < clearList.size(); i++) {
+            if (clearList.get(i).equals(dir)) {
                 clearList.get(i).setStar(dir.getStar());
                 clearList.get(i).setClear(dir.getClear());
             }

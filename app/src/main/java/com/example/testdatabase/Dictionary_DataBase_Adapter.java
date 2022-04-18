@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataAdapter {
+public class Dictionary_DataBase_Adapter {
     protected static final String TAG = "DataAdapter";
 
     // TODO : TABLE 이름을 명시해야함
@@ -18,14 +18,14 @@ public class DataAdapter {
 
     private final Context mContext;
     private SQLiteDatabase mDb;
-    private DataBaseHelper mDbHelper;
+    private Dictionary_CustomAdapter_DataBase_Helper mDbHelper;
 
-    public DataAdapter(Context context) {
+    public Dictionary_DataBase_Adapter(Context context) {
         this.mContext = context;
-        mDbHelper = new DataBaseHelper(mContext);
+        mDbHelper = new Dictionary_CustomAdapter_DataBase_Helper(mContext);
     }
 
-    public DataAdapter createDatabase() throws SQLException {
+    public Dictionary_DataBase_Adapter createDatabase() throws SQLException {
         try {
             mDbHelper.createDataBase();
         } catch (IOException mIOException) {
@@ -35,7 +35,7 @@ public class DataAdapter {
         return this;
     }
 
-    public DataAdapter open() throws SQLException {
+    public Dictionary_DataBase_Adapter open() throws SQLException {
         try {
             mDbHelper.openDataBase();
             mDbHelper.close();
