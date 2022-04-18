@@ -50,6 +50,21 @@ public class Dictionary_DataBase_Adapter {
     public void close() {
         mDbHelper.close();
     }
+    public void updateDatabase(List<Directory> dirList){
+        mDb = mDbHelper.getWritableDatabase();
+        for(int i=0; i<dirList.size(); i++){
+            mDb.execSQL("UPDATE " + TABLE_NAME + " SET clear = '"
+                    + dirList.get(i).clear + "', star = '" + dirList.get(i).star +
+                    "' WHERE word = '"
+                    + dirList.get(i).getWord() + "';");
+//            String sql = "UPDATE " + TABLE_NAME + " SET CLEAR = " +
+//                    dirList.get(i).clear +  ", SET STAR = " +
+//                    dirList.get(i).star + " WHERE " + dirList.get(i).getWord() + ";";
+//            mDb.execSQL(sql);
+        }
+        mDb.close();
+
+    }
 
     public List getTableData() {
         try {

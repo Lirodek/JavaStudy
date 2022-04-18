@@ -47,7 +47,7 @@ public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnCli
 
     @Override
     public View getView(int position, View converView, ViewGroup parent){
-        final ViewHolder holder;
+        ViewHolder holder = null;
         final int pos = position;
         final Context context = parent.getContext();
         // 생성자로 부터 저장된 resourceId(Listview_btn_item) 에

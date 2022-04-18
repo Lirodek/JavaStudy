@@ -14,5 +14,10 @@
         android:title="단어장"
         android:visible="false"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/reset_icon"
+        android:title="reset"
+        android:icon="@drawable/reset_icon"
+        app:showAsAction="always"/>
 
 </menu>

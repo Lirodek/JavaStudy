@@ -78,7 +78,10 @@ public class Directory {
         Directory directory = (Directory) o;
         return Objects.equals(word, directory.word);
     }
+    public boolean equalsObj(Directory directory){
 
+        return directory.star.equals(star) || directory.clear.equals(clear);
+    }
     @Override
     public int hashCode() {
         return Objects.hash(word);
@@ -92,5 +95,15 @@ public class Directory {
                 ", word='" + word + '\'' +
                 ", meaning='" + meaning + '\'' +
                 '}';
+    }
+
+    public void setObj(Directory directory) {
+        idx = directory.idx;
+        word = directory.word;
+        meaning = directory.meaning;
+        clear = directory.clear;
+        star = directory.star;
+        directoryCheck = directory.directoryCheck;
+
     }
 }
