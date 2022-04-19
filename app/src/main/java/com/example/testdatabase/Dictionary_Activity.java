@@ -1,10 +1,13 @@
 package com.example.testdatabase;
 
+import static android.speech.tts.TextToSpeech.ERROR;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.speech.tts.TextToSpeech;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -20,28 +24,31 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Dictionary_Activity extends AppCompatActivity implements Dictionary_CustomAdapter.ListBtnClickListener {
-    private List<Directory> DirList;
-    private List<Directory> clearList = new ArrayList<Directory>();
-    private List<Directory> starList = new ArrayList<Directory>();
-    private List<Directory> saveList = new ArrayList<Directory>();
-    List<Directory> anotherList = new ArrayList<Directory>();
-    public List<JapanDirectory> JapanDirList;
+    private List<Directory> DirList; // 단어장 => 리스트안에들어갈 단어사전
+    private List<Directory> clearList = new ArrayList<Directory>(); // 외운단어 => 리스트안에들어갈 단어사전
+    private List<Directory> starList = new ArrayList<Directory>(); // 중요단어 => 리스트안에들어갈 단어사전
+    private List<Directory> saveList = new ArrayList<Directory>(); // 초기단어 => 처음 불러왓을때 원본의 Data List
+    List<Directory> anotherList = new ArrayList<Directory>(); // 저장시 초기 Version과 다른지 확인해서 업로드 하는 리스트
+    List<Directory> filterList = new ArrayList<Directory>();
+    List<Directory> holdList  = new ArrayList<Directory>();
+    private String[] word;
+    private TextToSpeech tts;
+    private Button searchBtn;
 
-    private Dictionary_CustomAdapter adapter;
-    private Dictionary_DataBase_Adapter mDbHelper;
+    private Dictionary_CustomAdapter adapter; // 리스트뷰 어댑터
+    private Dictionary_DataBase_Adapter mDbHelper; // 데이터베이스 어댑터
 
-    MenuItem diretory, star, graduated;
+    MenuItem diretory, star, graduated; // 메뉴아이템 3개
     List<Directory> tempList; // 현재 사용할 List를 갱신해주는 역활
-    OnItemClick listClick = new OnItemClick();
-    List<BenPick> benList = new ArrayList<BenPick>();
-    EditText edtFilter;
-    TextView maintv, subtv;
-    ImageButton imageButton;
-    ImageButton clear2;
-    ListView list;
-    boolean language = true;
+    OnItemClick listClick = new OnItemClick(); // 클릭 리스너
+    EditText edtFilter; // 검색창
+    TextView maintv, subtv; // 다이얼로그 안에 들어가는 텍스트뷰
+    ImageButton imageButton, clear2, sound;  // 다이얼로그 안에들어가는 이미지뷰
+    ListView list; // 메인 리스트뷰
+    boolean language = true; //
     public List<Directory> getDirectory(){
         return DirList;
     }
@@ -56,7 +63,8 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
         initLoadDB();// database에 값을 가져옵니다
         initListes();
         edtFilter = findViewById(R.id.textFilter);
-        String[] word;
+        searchBtn = findViewById(R.id.searchFilter);
+
 
         word = new String[DirList.size()]; // List View 안에 적용시킬수있는 단어들을 가져왓습니다.
         for (int i = 0; i < DirList.size(); i++) {
@@ -75,30 +83,46 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
         //====================리스트뷰 클릭시 발생하는 이밴트====================
         list.setOnItemClickListener(listClick);
 
-        edtFilter.addTextChangedListener(new TextWatcher() {
+        searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable edit) {
-                String filterText = edit.toString();
-                if (filterText.length() > 0) {
-                    list.setFilterText(filterText);
-                } else
-                    list.clearTextFilter();
+            public void onClick(View v) {
+                filterMethod(edtFilter.getText().toString());
+                tempList = holdList;
             }
         });
 
 
     }
 
+    public void filterMethod(String filter){
+        filterList.clear();
+        int check=1;
+        int filtertemp = 0;
+        System.out.println(filter.length());
+        for(int i =0; i<tempList.size();i++){
+            for(int j=0; j<filter.length();j++){
+                if(tempList.get(i).getWord().length()<filter.length()){
+                    break;
+                }
+                String tempC = String.valueOf(tempList.get(i).getWord().charAt(j));
+                String filterC =  String.valueOf(filter.charAt(j));
+                if(tempC.equals(filterC) ){
+                    check+=1;
+                } else
+                    check+=0;
+            }
+            if(check == filter.length()+1 ){
+                Directory dir = dirSrearch(tempList.get(i).getWord());
+                filterList.add(dir);
+            }
+            check =  1;
+        }
+        if(filterList != null) {
+            holdList = tempList;
+            tempList = filterList;
+            turnList(tempList);
+        }
+    }
     // 메뉴 관련 초기화 함수
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,7 +130,6 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
         diretory = menu.findItem(R.id.language_dir);
         star = menu.findItem(R.id.language_star);
         graduated = menu.findItem(R.id.language_ben);
-        language = false;
         return true;
     }
 
@@ -141,6 +164,11 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
             case "reset":
                 listCollect();
                 mDbHelper.updateDatabase(anotherList);
+                break;
+            case "change":
+                Intent intent = new Intent(getApplicationContext(),ChangeLanguage.class);
+                intent.putExtra("language", language);
+                startActivity(intent);
                 break;
 
         }
@@ -226,13 +254,12 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
         mDbHelper = new Dictionary_DataBase_Adapter(getApplicationContext());
         mDbHelper.createDatabase();
         mDbHelper.open();
-        benList = mDbHelper.getBenPick();
-        System.out.println(benList.toString());
         if (language == true) {
-            DirList = mDbHelper.getTableData();
-            saveList = mDbHelper.getTableData();
+            DirList = mDbHelper.getTableData(); // Dir List를 가져옵니다.
+            saveList = mDbHelper.getTableData(); // DirList 초기 버젼을 저장하는 리스트입니다.
         } else {
-            DirList = mDbHelper.getTable();
+            DirList = mDbHelper.getJTableData(); // Dir List를 가져옵니다.
+            saveList = mDbHelper.getJTableData(); // DirList 초기 버젼을 저장하는 리스트입니다.
         }
         tempList = DirList;
         mDbHelper.close();
@@ -269,9 +296,9 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
     }
 
     // Click한 메뉴에 따라 리스트 뷰를 교체해서 보여지 Activity(ListView)를 변경해주는 함수
-    public void turnList(List dictionaryList) {
+    public void turnList(List<Directory> dictionaryList) {
         ArrayList<ListViewBtnItem> items = new ArrayList<ListViewBtnItem>();
-        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this, tempList);
+        adapter = new Dictionary_CustomAdapter(this, R.layout.dictionary_make_list_view, items, this, dictionaryList);
         loadItemsFromDB(items);
         adapter.notifyDataSetChanged();
         list.setAdapter(adapter);
@@ -318,11 +345,19 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
             subtv = (TextView) dialogView.findViewById(R.id.txt1);
             imageButton = (ImageButton) dialogView.findViewById(R.id.imageBtn);
             clear2 = (ImageButton) dialogView.findViewById(R.id.clearBtn);
+            sound = (ImageButton) dialogView.findViewById(R.id.soundBtn);
             AlertDialog.Builder dlg = new AlertDialog.Builder(Dictionary_Activity.this);
+
+
             //idx를 가져오기 위한 vo 선언
             final int pos = position;
-            String word = parent.getAdapter().getItem(position).toString();
-            word = wordMaker(word);
+            String word = "";
+            if(language == false){
+                word = tempList.get(pos).getWord();
+            } else if (language == true){
+                word = wordMaker(parent.getAdapter().getItem(position).toString());
+            }
+            System.out.println(word);
             Directory dir = dirSrearch(word);
             String vo = (String) parent.getAdapter().getItem(position).toString();
             final int point = getListID();
@@ -336,7 +371,17 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
                 clear2.setImageResource(R.drawable.study);
             }
             // dialog textBox를 채우는 부분
-            maintv.setText(dir.getWord());
+            String tempstr = dir.getWord();
+            if( language == false){
+                String cutting = "(";
+                int k = tempstr.indexOf("(");
+                cutting="";
+                for(int i=0; i<k;i++){
+                    cutting += tempstr.charAt(i);
+                }
+                tempstr= cutting;
+            }
+            maintv.setText(tempstr);
             subtv.setText(dir.getMeaning());
             dlg.setView(dialogView);
             //====================리스트뷰 안에 사전 이미지 버튼을 클릭할때 발생하는 이밴트====================
@@ -372,6 +417,30 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
                     }
                 }
             });
+            tts = new TextToSpeech(parent.getContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(language == false) {
+                        // 언어를 선택한다.
+                        tts.setLanguage(Locale.JAPAN);
+                        System.out.println("일본어 실행됨");
+                    } else if(language == true) {
+                        System.out.println(language);
+                        tts.setLanguage(Locale.ENGLISH);
+                        System.out.println("영어 실행됨");
+                    }
+                }
+            });
+            String finalWord = maintv.getText().toString();
+            sound.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    tts.setPitch(1.0f);         // 음성 톤은 기본 설정
+                    tts.setSpeechRate(0.5f);    // 읽는 속도를 0.5빠르기로 설정
+                    // editText에 있는 문장을 읽는다.
+                    tts.speak(finalWord,TextToSpeech.QUEUE_FLUSH, null);
+                }
+            });
             dlg.setNegativeButton("닫기", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -399,6 +468,7 @@ public class Dictionary_Activity extends AppCompatActivity implements Dictionary
     }
 
     private Directory dirSrearch(String word) { // word값을 가지고 DirList에서 값을 까져옴
+        System.out.println(word);
         Directory dir = new Directory(word);
         for (int i = 0; i < DirList.size(); i++) {
             if (DirList.get(i).equals(dir)) {

@@ -33,7 +33,14 @@
             android:paddingBottom="20dp"
             android:gravity="end">
 
-
+            <ImageButton
+                android:id="@+id/soundBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:paddingRight="10dp"
+                android:paddingLeft="10dp"
+                android:src="@drawable/sound" />
             <ImageButton
                 android:id="@+id/clearBtn"
                 android:layout_width="wrap_content"
@@ -49,6 +56,7 @@
                 android:paddingRight="10dp"
                 android:paddingLeft="10dp"
                 android:src="@drawable/star" />
+
         </LinearLayout>
     </LinearLayout>
 

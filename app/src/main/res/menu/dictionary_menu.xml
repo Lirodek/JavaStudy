@@ -15,6 +15,11 @@
         android:visible="false"
         app:showAsAction="always"/>
     <item
+        android:id="@+id/change_icon"
+        android:title="change"
+        android:icon="@drawable/change"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/reset_icon"
         android:title="reset"
         android:icon="@drawable/reset_icon"

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,15 +24,20 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnClickListener, AdapterView.OnItemClickListener {
-
+public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnClickListener, AdapterView.OnItemClickListener, Filterable {
+    public static class ViewHolder {
+        TextView word;
+        ImageView imageStar;
+        ImageView imageClear;
+        ImageView imageDir;
+    }
     int resourceId;
-    Dictionary_Activity Main = new Dictionary_Activity();
     ListBtnClickListener listBtnClickListener;
     Context context;
     ViewHolder holder = null;
     int getPosition;
-    List<Directory> dirList = new ArrayList<Directory>();
+    List<Directory> dirList;
+
 
     public Dictionary_CustomAdapter(Context context, int resource, ArrayList<ListViewBtnItem> list,
                          ListBtnClickListener clickListener, List<Directory> dir){
@@ -54,7 +60,6 @@ public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnCli
         if(converView == null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             converView = inflater.inflate(this.resourceId/*R.Layout.listview_btn_item*/, parent, false);
-
             holder = new ViewHolder();
             holder.word = (TextView) converView.findViewById(R.id.wordName);
             holder.imageClear = (ImageView) converView.findViewById(R.id.imageClear);
@@ -65,24 +70,26 @@ public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnCli
             holder = (ViewHolder) converView.getTag();
 
         // 화면에 표시될 View(Layout이 inflate된)로 부터 위젯에 대한 참조 획득
-        holder.word.setText(position+1+". "+dirList.get(position).getWord());
-        if(dirList.get(position).getStar().equals("yes")){
-            holder.imageStar.setImageResource(R.drawable.starlight);
-        } else {
-            holder.imageStar.setImageResource(R.drawable.star);
-        }
-        if(dirList.get(position).getClear().equals("학습중")){
-            holder.imageClear.setImageResource(R.drawable.studying);
-        } else {
-            holder.imageClear.setImageResource(R.drawable.study);
+        if(dirList != null ) {
+            holder.word.setText(position + 1 + ". " + dirList.get(position).getWord());
+            if (dirList.get(position).getStar().equals("yes")) {
+                holder.imageStar.setImageResource(R.drawable.starlight);
+            } else {
+                holder.imageStar.setImageResource(R.drawable.star);
+            }
+            if (dirList.get(position).getClear().equals("학습중")) {
+                holder.imageClear.setImageResource(R.drawable.studying);
+            } else {
+                holder.imageClear.setImageResource(R.drawable.study);
+            }
         }
         final ViewHolder finalHolder = holder;
         holder.imageDir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println(resourceId);
                 String word = indexMaker(finalHolder.word.getText().toString());
                 Uri uri = uriMake(word);
-                System.out.println(Main.getDirectory());
                 //인터넷창에 띄워줍니다.
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 context.startActivity(intent);
@@ -120,13 +127,7 @@ public class Dictionary_CustomAdapter extends ArrayAdapter implements View.OnCli
         return Uri.parse(url + word); //링크와 합성해서
 
     }
-    public static class ViewHolder {
-        TextView word;
-        ImageView imageStar;
-        ImageView imageClear;
-        ImageView imageDir;
 
-    }
     @Override
     public String toString() {
         return "";

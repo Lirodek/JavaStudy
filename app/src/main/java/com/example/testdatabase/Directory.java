@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class Directory {
     public String idx; // 목록 번호
-    public String division; // 분류
     public String word; // 단어
     public String meaning; // 단어의 뜻
     public String clear;
@@ -47,14 +46,6 @@ public class Directory {
         this.idx = idx;
     }
 
-    public String getDivision() {
-        return division;
-    }
-
-    public void setDivision(String division) {
-        this.division = division;
-    }
-
     public String getWord() {
         return word;
     }
@@ -91,7 +82,6 @@ public class Directory {
     public String toString() {
         return "Database{" +
                 "idx='" + idx + '\'' +
-                ", division='" + division + '\'' +
                 ", word='" + word + '\'' +
                 ", meaning='" + meaning + '\'' +
                 '}';

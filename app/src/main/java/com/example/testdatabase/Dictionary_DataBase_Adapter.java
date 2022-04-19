@@ -15,6 +15,7 @@ public class Dictionary_DataBase_Adapter {
 
     // TODO : TABLE 이름을 명시해야함
     protected static final String TABLE_NAME = "engword";
+    protected static final String JTABLE_NAME = "jpnword";
 
     private final Context mContext;
     private SQLiteDatabase mDb;
@@ -88,11 +89,10 @@ public class Dictionary_DataBase_Adapter {
                     // TODO : Record 기술
                     // id, name, account, privateKey, secretKey, Comment
                     db.setIdx(mCur.getString(0));
-                    db.setDivision(mCur.getString(1));
-                    db.setWord(mCur.getString(2));
-                    db.setMeaning(mCur.getString(3));
-                    db.setClear(mCur.getString(4));
-                    db.setStar(mCur.getString(5));
+                    db.setWord(mCur.getString(1));
+                    db.setMeaning(mCur.getString(2));
+                    db.setClear(mCur.getString(3));
+                    db.setStar(mCur.getString(4));
 
                     // 리스트에 넣기
                     dbList.add(db);
@@ -105,58 +105,35 @@ public class Dictionary_DataBase_Adapter {
         }
     }
 
-    public List getTable() {
+    public List getJTableData() {
         try {
             // Table 이름 -> antpool_bitcoin 불러오기
-            String sql = "SELECT * FROM " + "jpnword";
+            String sql = "SELECT * FROM " + JTABLE_NAME;
 
             // 모델 넣을 리스트 생성
             List dbList = new ArrayList();
 
             // TODO : 모델 선언
-            JapanDirectory jdb = null;
+            Directory db = null;
 
             Cursor mCur = mDb.rawQuery(sql, null);
             if (mCur != null) {
                 // 칼럼의 마지막까지
                 while (mCur.moveToNext()) {
-                    jdb = new JapanDirectory();
 
-                    jdb.setWord(mCur.getString(0));
-                    jdb.setMeaning(mCur.getString(1));
+                    // TODO : 커스텀 모델 생성
+                    db = new Directory();
 
+                    // TODO : Record 기술
+                    // id, name, account, privateKey, secretKey, Comment
+                    db.setIdx(mCur.getString(0));
+                    db.setWord(mCur.getString(1));
+                    db.setMeaning(mCur.getString(2));
+                    db.setClear(mCur.getString(3));
+                    db.setStar(mCur.getString(4));
 
-                    dbList.add(jdb);
-                }
-            }
-            return dbList;
-        } catch (SQLException mSQLException) {
-            Log.e(TAG, "getTestData >>" + mSQLException.toString());
-            throw mSQLException;
-        }
-    }
-    public List getBenPick() {
-        try {
-            // Table 이름 -> antpool_bitcoin 불러오기
-            String sql = "SELECT * FROM " + "compleat";
-
-            // 모델 넣을 리스트 생성
-            List dbList = new ArrayList();
-
-            // TODO : 모델 선언
-            BenPick ben = null;
-
-            Cursor mCur = mDb.rawQuery(sql, null);
-            if (mCur != null) {
-                // 칼럼의 마지막까지
-                while (mCur.moveToNext()) {
-                    ben = new BenPick();
-
-                    ben.setEng(mCur.getString(0));
-                    ben.setJapan(mCur.getString(1));
-
-
-                    dbList.add(ben);
+                    // 리스트에 넣기
+                    dbList.add(db);
                 }
             }
             return dbList;
