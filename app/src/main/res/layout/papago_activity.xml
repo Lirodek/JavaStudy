@@ -65,7 +65,7 @@
             android:src="@drawable/logo"/>
         <TextView
             android:id="@+id/transText"
-            android:text="test message test message test message test message"
+            android:text="번역기입니다 !"
             android:textSize="20dp"
             android:textColor="#555555"
             android:layout_width="match_parent"
