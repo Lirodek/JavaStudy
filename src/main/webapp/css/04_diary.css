@@ -1,0 +1,17 @@
+@charset "UTF-8";
+div > div{
+	width : 210px;
+}
+div > div > div{
+text-align:center;
+line-height : 30px;
+	width : 30px;
+	height: 30px;
+	border: 1px solid #000;
+	float: left;
+	box-sizing: border-box;
+}
+
+div>div>img{
+	width : 200px;
+}
