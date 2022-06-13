@@ -1,3 +1,7 @@
+## Management System
+본 프로젝트는 React 나동빈 강의를 보고 만든 
+고객관리 시스템 프로젝트입니다
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
