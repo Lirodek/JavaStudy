@@ -116,8 +116,8 @@ ul{
     top: 70px;
     left: 0;
     width: 100%;
-    height: 200px;
-    transition: .5s ease;
+    height: 0;
+    transition: 0.5s ease;
     overflow: hidden;
 }
 
@@ -141,4 +141,36 @@ ul{
     padding-left: 50px;
     color: white;
     cursor: pointer;
+}
+
+@media (min-width:992px){
+    .header-aria > .navbar > .navbar-menu{
+        position: relative;
+        background-color: transparent;
+        float: right;
+        top : 0;
+        width: auto;
+        height: auto;
+        transition: none;
+    }
+
+    .header-aria > .navbar > .navbar-menu.show{
+        height: auto;
+    }
+
+    .header-aria > .navbar > .navbar-menu > .nav-item {
+        display: inline-block;
+        height: 70px;
+        line-height: 70px;
+    }
+
+    .header-aria > .navbar > .navbar-menu > .nav-item:hover * {
+        background-color: transparent;
+    }
+
+    .header-aria > .navbar > .navbar-menu > .nav-item > .nav-link {
+        display: block;
+        padding: 0 20px;
+        color: black;
+    }
 }
