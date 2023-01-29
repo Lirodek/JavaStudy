@@ -79,3 +79,20 @@
     }
 
     var imageTimer = setInterval(imageSlideTimer, 3000);
+
+    /* PORTFOLIO AREA */
+    function filterSelection(id){
+        var x, i;
+        x = $('listItem');
+        for(i=0;i<x.length;i++)
+            removeClass(x[i], 'active');
+        addClass($('#'+id), 'active');
+    }
+
+    function addClass(element, name){
+
+    }
+
+    function removeClass(element, name){
+
+    }
