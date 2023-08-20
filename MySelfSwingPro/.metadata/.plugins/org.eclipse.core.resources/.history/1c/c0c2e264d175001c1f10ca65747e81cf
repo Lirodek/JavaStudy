@@ -1,0 +1,40 @@
+package org.LiroSelf.Event;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+
+import org.LiroSelf.Controller.AllController;
+import org.LiroSelf.Controller.Controller;
+import org.LiroSelf.Controller.InsertController;
+import org.LiroSelf.Resource.R;
+import org.LiroSelf.View.BtnTitle;
+
+public class ButtonEvent implements ActionListener, R {
+	BtnTitle target;
+
+	public ButtonEvent(BtnTitle target) {
+		ctrlMap.put(btnSearch, new SearchController());
+//		ctrlMap.put(btnDelete, new SearchController());
+		ctrlMap.put(btnInsert, new InsertController());
+//		ctrlMap.put(btnModi, new SearchController());
+		ctrlMap.put(btnAll, new AllController());
+//		
+		ctrlMap.get(btnAll).service();
+		this.target = target;
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		JButton action = ( JButton )e.getSource();
+		Controller ctrl = ctrlMap.get(action);
+		ctrl.service();
+
+
+
+	}
+
+}

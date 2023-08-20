@@ -1,0 +1,21 @@
+package org.LiroSelf.Controller;
+
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
+import org.LiroSelf.View.SearchInfomation;
+
+public class SearchController implements Controller{
+
+	@Override
+	public void service() {
+		// TODO Auto-generated method stub
+		String name = JOptionPane.showInputDialog("이름을 검색합니다.");
+		Vector v = null;
+		v.add(dao.sarchData(name));
+		System.out.println(v);
+//		SearchInfomation search = new SearchInfomation(v);
+	}
+
+}

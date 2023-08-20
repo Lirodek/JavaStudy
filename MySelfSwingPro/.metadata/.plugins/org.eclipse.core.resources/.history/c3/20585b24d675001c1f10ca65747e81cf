@@ -1,0 +1,66 @@
+package org.LiroSelf.Model;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+
+public class DataAcess {
+	private DataMake dto;
+	private static ArrayList<DataMake> dtoList = new ArrayList<>();
+	private static int num=0;
+	
+	public static ArrayList<DataMake> selectAll(){
+		return dtoList;
+	}
+	
+	public void dataInsert(DataMake inputData) {
+		
+		int no = num++;
+		secretNumber(inputData);
+		
+		
+		
+		dtoList.add(inputData);
+	}
+	
+	private void secretNumber(DataMake inputData) {//고유번호 부여하는 알고리즘
+		int nationCode = inputData.getNation().charAt(0);
+		nationCode /= 1000;
+		int ageCode = inputData.getAge();
+		ageCode *= 6;
+		ageCode /= 4;
+		int phoneCode1 = inputData.getPhoneNumber().charAt(1);
+		int phoneCode2 = inputData.getPhoneNumber().charAt(2);
+		int sexCode = inputData.getSex().charAt(0);
+		sexCode /= 1000;
+		int raguCode = inputData.getRanguage().length();
+		
+		String scretCode = nationCode+""+ageCode+""+
+				phoneCode1+""+phoneCode2+""+sexCode+""+raguCode+num;
+		inputData.setSpecialNumber(scretCode);
+		inputData.setNo(num);
+		inputData.setRanguage(inputData.getRanguage().trim());
+		
+		
+	}
+	public Vector<DataMake> sarchData(String name){
+		Vector<DataMake> v = new Vector<DataMake>();
+		Iterator<DataMake> itr = dtoList.iterator();
+		while(itr.hasNext()) {
+			dto = itr.next();
+			if(dto.getName().equals(name)) {
+				v.add(dto);
+				return v;
+			}
+		}
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+}
